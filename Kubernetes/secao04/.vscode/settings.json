@@ -1,0 +1,5 @@
+{
+    "[yaml]": {
+        "editor.defaultFoldingRangeProvider": "kennylong.kubernetes-yaml-formatter"
+    }
+}
