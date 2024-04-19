@@ -1,13 +1,3 @@
-<style>
-  .profile-section {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-</style>
-
 # Marcelo Camargo
 
 <div class="profile-section">
@@ -33,14 +23,17 @@ Sou um profissional em constante aprendizado, sempre buscando aprimorar minhas h
 
 **Links Úteis:**
 
-- [<img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Fbr%2Ficone-gratis%2Flinkedin_174857&psig=AOvVaw0QrdBjsA1LXKE_pfVopZED&ust=1713632472766000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCKjBhsvgzoUDFQAAAAAdAAAAABAE" alt="LinkedIn" width="20"/> LinkedIn](https://www.linkedin.com/in/marcelo-camargo-6b9ab1203)
-- [<img src="https://image.flaticon.com/icons/png/512/732/732221.png" alt="Wordpress" width="20"/> Wordpress](https://mschelp.wordpress.com)
-- [<img src="https://image.flaticon.com/icons/png/512/873/873120.png" alt="PythonAnywhere" width="20"/> PythonAnywhere](http://mcamargorj.pythonanyare.com)
+
+[<img src="https://img.icons8.com/color/48/linkedin.png" alt="linkedin" width="48" height="48"/>](https://www.linkedin.com/in/marcelo-camargo-6b9ab1203)
+[<img src="https://img.icons8.com/color/48/wordpress.png" alt="wordpress" width="48" height="48"/>](https://mschelp.wordpress.com)
+[<img src="https://img.icons8.com/color/48/python--v1.png" alt="python--v1" width="48" height="48"/>](http://mcamargorj.pythonanyare.com)
+
+
 
 ---
 
 **MSCHelp**
 
-![MSCHelp Image](mschelp.png =250x)
+<img src="mschelp.png" alt="MSCHelp Image" width="250">
 
 Este repositório é para estudo e aprendizado.
