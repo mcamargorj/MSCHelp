@@ -1,6 +1,6 @@
 # Marcelo Camargo
 
-<div class="profile-section">
+<div>
 
 ## Perfil Profissional
 
