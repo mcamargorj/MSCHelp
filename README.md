@@ -26,7 +26,7 @@ Sou um profissional em constante aprendizado, sempre buscando aprimorar minhas h
 
 [<img src="https://img.icons8.com/color/48/linkedin.png" alt="linkedin" width="48" height="48"/>](https://www.linkedin.com/in/marcelo-camargo-6b9ab1203)
 [<img src="https://img.icons8.com/color/48/wordpress.png" alt="wordpress" width="48" height="48"/>](https://mschelp.wordpress.com)
-[<img src="https://img.icons8.com/color/48/python--v1.png" alt="python--v1" width="48" height="48"/>](http://mcamargorj.pythonanyare.com)
+[<img src="https://img.icons8.com/color/48/python--v1.png" alt="python--v1" width="48" height="48"/>](https://mcamargorj.pythonanywhere.com/)
 
 
 
