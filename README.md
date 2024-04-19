@@ -4,7 +4,7 @@
 
 ## Perfil Profissional
 
-Olá! Sou Marcelo Camargo, um profissional de TI altamente qualificado, especializado em DevSecOps e apaixonado por encontrar soluções inovadoras para desafios de segurança. Minha experiência abrange uma ampla gama de áreas, incluindo infraestrutura, redes, desenvolvimento e análise de dados, combinada com um forte conhecimento em cibersegurança.
+Olá! Sou Marcelo Camargo, um profissional de TI altamente qualificado, especializado em DevSecOps e apaixonado por encontrar soluções inovadoras para desafios de segurança. Minha experiência abrange uma ampla gama de áreas, incluindo infraestrutura, redes, desenvolvimento e análise de dados, combinada com conhecimento em cibersegurança.
 
 ### Principais Habilidades
 
