@@ -6,28 +6,31 @@ import os
 conexao = mysql.connector.connect(
     host="localhost",
     user="root",
-    password= os.environ.get('MYSQL_PASSWORD'), #MYSQL_PASSWORD - variável ambiente criada para que a senha não fique exposta no código.
+    password=os.environ.get('MYSQL_PASSWORD'),  # MYSQL_PASSWORD - variável ambiente criada para que a senha não fique exposta no código.
     database="MSCHELP"
 )
 
 # Criar um cursor para executar comandos SQL
 cursor = conexao.cursor()
 
-# Dados do novo usuário
-novo_usuario = {
-    "nome": "Marcelo",
-    "email": "mcamargoce@outlook.com",
-    "password": "davi1211"  # A senha em texto simples
-}
+# Receber dados do novo usuário via input
+nome = input("Digite o nome do novo usuário: ")
+email = input("Digite o email do novo usuário: ")
+senha = input("Digite a senha do novo usuário: ")
 
 # Criptografar a senha usando Werkzeug
-password_hash = generate_password_hash(novo_usuario["password"])
+password_hash = generate_password_hash(senha)
 
+# Dados do novo usuário
+novo_usuario = {
+    "nome": nome,
+    "email": email,
+    "password": senha  # A senha em texto simples
+}
 
 # Inserir o novo usuário na tabela
 sql = "INSERT INTO usuarios (nome, email, password) VALUES (%s, %s, %s)"
 valores = (novo_usuario["nome"], novo_usuario["email"], password_hash)
-
 
 cursor.execute(sql, valores)
 
