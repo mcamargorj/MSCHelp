@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel</title>
+    <!-- Adicionar links para o Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Adicionar Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2>Bem-vindo ao Painel</h2>
+                <p>Olá, {{nome}} </p>
+                <p>Bem-vindo!</p>
+                <p>Data e Hora: {{ current_time }}</p>
+                <hr>
+                <h3>Aplicativo Integrado</h3>
+                <div id="threejs-container" style="width: 100%; height: 500px;"></div> <!-- Ajuste o tamanho do contêiner -->
+                <!-- Adicionar campo CSRF token -->
+                <form id="csrf_form" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Adicionar links para o Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Script para criar a animação do cubo usando Three.js -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let rotation_direction = 1;  // Inicialmente, gira no sentido horário
+
+            const canvas = document.getElementById('threejs-container');
+            const width = canvas.clientWidth;
+            const height = canvas.clientHeight;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            canvas.appendChild(renderer.domElement);
+
+            const geometry = new THREE.BoxGeometry(2, 2, 2); // Ajuste o tamanho do cubo
+            const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Ajuste a cor do material
+            const cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            camera.position.z = 5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                cube.rotation.x += 0.01 * rotation_direction;
+                cube.rotation.y += 0.01 * rotation_direction;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowLeft') {
+                    rotation_direction = -1;  // Girar para a esquerda
+                } else if (event.key === 'ArrowRight') {
+                    rotation_direction = 1;   // Girar para a direita
+                }
+            });
+        });
+    </script>
+</body>
+</html>
