@@ -2,11 +2,11 @@ import mysql.connector
 from werkzeug.security import generate_password_hash
 import os
 
-# Conectar ao banco de dados MySQL/MariaDB
+# Conectar ao banco de dados MySQL/MariaDB - Utilizar o MySQL do seu servidor
 conexao = mysql.connector.connect(
     host="localhost",
     user="root",
-    password= os.environ.get('MYSQL_PASSWORD'),
+    password= os.environ.get('MYSQL_PASSWORD'), #MYSQL_PASSWORD - variável ambiente criada para que a senha não fique exposta no código.
     database="MSCHELP"
 )
 
