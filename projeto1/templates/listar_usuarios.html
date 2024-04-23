@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Usuários</title>
+</head>
+<body>
+    <h1>Lista de Usuários</h1>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+        </tr>
+        {% for usuario in usuarios %}
+        <tr>
+            <td>{{ usuario[1] }}</td>
+            <td>{{ usuario[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

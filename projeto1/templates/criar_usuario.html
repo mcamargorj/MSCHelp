@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Usuário</title>
+</head>
+<body>
+    <h1>Criar Novo Usuário</h1>
+    {% if sucesso %}
+    <p>Usuário criado com sucesso!</p>
+    {% endif %}
+    <form action="/criar_usuario" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br><br>
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" name="senha"><br><br>
+        <button type="submit">Criar</button>
+    </form>
+</body>
+</html>
