@@ -2,15 +2,41 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.core.window import Window
+from kivy.utils import get_color_from_hex
 import mysql.connector
 import os
 
 class MyBoxLayout(BoxLayout):
-    def criar_usuario(self):
+    def __init__(self, **kwargs):
+        super(MyBoxLayout, self).__init__(**kwargs)
+
+        # Configurar estilo de fundo
+        with self.canvas.before:
+            self.background_color = get_color_from_hex("#f0f0f0")  # Cor de fundo
+
+        # Adicionar campos de entrada e botão à interface
+        self.orientation = 'vertical'
+        self.padding = [50, 20]
+        self.spacing = 20
+
+        self.nome_input = TextInput(hint_text='Nome', multiline=False)
+        self.email_input = TextInput(hint_text='Email', multiline=False)
+        self.senha_input = TextInput(hint_text='Senha', multiline=False, password=True)
+
+        self.botao_criar = Button(text='Criar Usuário')
+        self.botao_criar.bind(on_press=self.criar_usuario)
+
+        self.add_widget(self.nome_input)
+        self.add_widget(self.email_input)
+        self.add_widget(self.senha_input)
+        self.add_widget(self.botao_criar)
+
+    def criar_usuario(self, instance):
         # Obter dados dos campos de entrada
-        nome = self.ids.nome_input.text
-        email = self.ids.email_input.text
-        senha = self.ids.senha_input.text
+        nome = self.nome_input.text
+        email = self.email_input.text
+        senha = self.senha_input.text
 
         # Conectar ao banco de dados MySQL/MariaDB
         conexao = mysql.connector.connect(
@@ -41,15 +67,7 @@ class MyBoxLayout(BoxLayout):
 
 class MyApp(App):
     def build(self):
-        layout = MyBoxLayout()
-
-        # Adicionar campos de entrada e botão à interface
-        layout.add_widget(TextInput(id='nome_input', hint_text='Nome'))
-        layout.add_widget(TextInput(id='email_input', hint_text='Email'))
-        layout.add_widget(TextInput(id='senha_input', hint_text='Senha', password=True))
-        layout.add_widget(Button(text='Criar Usuário', on_press=layout.criar_usuario))
-
-        return layout
+        return MyBoxLayout()
 
 if __name__ == '__main__':
     MyApp().run()
