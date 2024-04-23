@@ -24,8 +24,8 @@ usuarios = cursor.fetchall()
 # Mostrar os dados dos usuários
 print("Dados dos usuários:")
 for usuario in usuarios:
-    print("Nome:", usuario[0])
-    print("Email:", usuario[1])
+    print("Nome:", usuario[1])
+    print("Email:", usuario[2])
     # Você pode adicionar mais campos aqui conforme necessário
 
 # Fechar cursor e conexão
