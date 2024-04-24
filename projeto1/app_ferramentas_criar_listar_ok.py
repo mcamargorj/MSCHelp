@@ -55,10 +55,9 @@ def criar_usuario():
 
 
 # Função para remover um usuário existente
-# Função para remover um usuário existente
 def remover_usuario():
+    # Conectar ao banco de dados MySQL/MariaDB - Utilizar o MySQL do seu servidor
     if request.method == 'POST':
-        # Conectar ao banco de dados MySQL/MariaDB
         conexao = mysql.connector.connect(
             host="localhost",
             user="root",
@@ -69,8 +68,8 @@ def remover_usuario():
         # Criar um cursor para executar comandos SQL
         cursor = conexao.cursor()
 
-        # Receber o email do usuário a ser removido via formulário
-        email_usuario = request.form['email']
+        # Solicitar o email do usuário a ser removido
+        email_usuario = input("Digite o email do usuário que deseja remover: ")
 
         # Comando SQL para deletar o usuário com o email especificado
         sql = "DELETE FROM usuarios WHERE email = %s"
@@ -86,12 +85,11 @@ def remover_usuario():
         cursor.close()
         conexao.close()
 
-        print("Usuário removido com sucesso!")  # Mensagem para indicar sucesso
-
+        print("Usuário removido com sucesso!")
+        
         return True
     else:
         return False
-
 
 
 # Função para listar todos os usuários
