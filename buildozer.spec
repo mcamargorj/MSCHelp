@@ -407,8 +407,9 @@ warn_on_root = 1
 #[app:source.exclude_patterns]
 #license
 #data/audio/*.wav
-#data/images/original/*
-#
+#data/images/
+android.sdkmanager.tools = cmdline-tools;latest
+
 
 
 #    -----------------------------------------------------------------------------
