@@ -7,7 +7,7 @@ title = SampleApp
 package.name = sampleapk
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.novfensec
+package.domain = org.local
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -44,10 +44,10 @@ requirements = python3,kivy==2.1.0,kivymd==0.104.2,pillow==8.3.1
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = %(source.dir)s/images/presplash.png
+#presplash.filename = %(source.dir)s/images/presplash.png
 
 # (str) Icon of the application
-icon.filename = %(source.dir)s/images/favicon.png
+#icon.filename = %(source.dir)s/images/favicon.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
