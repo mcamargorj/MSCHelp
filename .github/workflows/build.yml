@@ -18,6 +18,9 @@ jobs:
           sudo apt install -y python3-pip
           pip3 install buildozer
 
+          # Install Cython
+          pip3 install cython
+
           # Install Android SDK
           mkdir android-sdk
           cd android-sdk
@@ -29,10 +32,6 @@ jobs:
           echo 'export ANDROID_HOME=$(pwd)' >> $GITHUB_ENV
           echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin' >> $GITHUB_ENV
 
-      - name: Check if buildozer.spec exists
-        run: test -e buildozer.spec || echo "No existing buildozer.spec found."
-
       - name: Build APK
-        if: success() && !cancelled()
         run: |
           buildozer -v android debug
