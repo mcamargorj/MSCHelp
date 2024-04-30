@@ -18,4 +18,22 @@ jobs:
           sudo apt install -y python3-pip
           pip3 install buildozer
 
-          # Install
+          # Install Android SDK
+          mkdir android-sdk
+          cd android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+          unzip commandlinetools-linux-7583922_latest.zip
+          rm commandlinetools-linux-7583922_latest.zip
+          export ANDROID_HOME=$(pwd)
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin
+          echo 'export ANDROID_HOME=$(pwd)' >> $GITHUB_ENV
+          echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin' >> $GITHUB_ENV
+
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Build APK
+        run: |
+          buildozer init
+          buildozer -v android debug
+
