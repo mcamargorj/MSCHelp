@@ -36,4 +36,3 @@ jobs:
         run: |
           buildozer init
           buildozer -v android debug
-
