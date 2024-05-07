@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: green;
+            text-align: center;
+        }
+
+        .container {
+            position: relative; /* Para permitir o posicionamento absoluto dos elementos filhos */
+            max-width: 300px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #111111;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .container1 {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid green;
+            background-color: black;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s; /* Transição suave para a cor de fundo e cor do texto */
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            background-color: green;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #00ff00;
+            color: black; /* Mudança de cor do texto ao passar o mouse */
+        }
+
+        img {
+            max-width: 200px;
+            height: auto;
+            max-height: 200px;
+        }
+
+        canvas {
+            position: absolute; /* Posicionamento absoluto para que o canvas fique atrás do formulário */
+            top: 0;
+            left: 0;
+            z-index: -1; /* Coloca o canvas atrás de todos os outros elementos */
+        }
+    </style>
+
+    <script>
+    // Desabilita o menu de contexto do botão direito do mouse
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    });
+
+    // Desabilita o atalho do teclado Ctrl+U para visualizar o código-fonte
+    document.onkeydown = function(e) {
+        if (e.ctrlKey &&
+           (e.keyCode === 85 || // 85 é o código da tecla "U"
+            e.keyCode === 117)) { // 117 é o código da tecla "u"
+            return false;
+        }
+    };
+</script>
+
+<script>
+    // Detecta se as ferramentas de desenvolvimento estão abertas e bloqueia
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
+            alert('O acesso à ferramenta de desenvolvedor está bloqueado.');
+            e.preventDefault();
+        }
+    });
+</script>
+
+</head>
+<body>
+    <canvas id="matrix"></canvas> <!-- Colocado antes do formulário para que fique atrás -->
+    <div class="container">
+        <div class="container1">
+            <img src="/static/images/logo3.png" alt="MSCHELP">
+        </div>
+        <h3>Entre com suas credenciais</h3>
+        {% if mensagem %}
+            <p style="color: red;">{{ mensagem }}</p>
+        {% endif %}
+        <form method="post" onsubmit="convertToLowercase()">
+            <label for="usuario">Usuário:</label><br>
+            <input type="text" id="usuario" name="usuario" placeholder="Digite: Marcelo"><br>
+            <label for="senha">Senha:</label><br>
+            <input type="password" id="senha" name="senha" placeholder="Digite: davi"> <br> <br>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+   
+    <script>
+         // Quando esta função é chamada, ela busca o elemento do formulário com o id "usuario" 
+         // e converte seu valor para minúsculas usando o método toLowerCase(). 
+         // Em seguida, ele atualiza o valor do campo de texto para o 
+         // valor em minúsculas. Geralmente, isso é usado para garantir que a entrada do usuário 
+         // seja consistente, independentemente de eles digitarem em maiúsculas ou minúsculas.
+        function convertToLowercase() {
+            var inputUsuario = document.getElementById("usuario");
+            inputUsuario.value = inputUsuario.value.toLowerCase();
+        }
+    </script>
+
+    <script>
+        // getting the canvas element
+        // Início do script efeito Matrix na tela. Neste o efeito vai de cima para baixo
+        const c = document.getElementById("matrix");
+
+        // defining the canvas context
+        const ctx = c.getContext("2d");
+
+        // making the canvas full screen
+        c.height = window.innerHeight;
+        c.width = window.innerWidth;
+
+        // letters used on Matrix rain
+        const letters = [
+          "日", "ﾊ", "ﾐ", "ﾋ", "ｰ", "ｳ", "ｼ", "ﾅ", "ﾓ", "ﾆ",
+          "ｻ", "ﾜ", "ﾂ", "ｵ", "ﾘ", "ｱ", "ﾎ", "ﾃ", "ﾏ", "ｹ",
+          "ﾒ", "ｴ", "ｶ", "ｷ", "ﾑ", "ﾕ", "ﾗ", "ｾ", "ﾈ", "ｽ",
+          "ﾀ", "ﾇ", "ﾍ", ":", "・", ".", "=", "*", "+", "-", "<",
+          ">", "¦", "｜", "ﾘ"
+        ];
+
+        const fontSize = 18;
+
+        // defining how many columns to print based on canvas width and font size
+        const columns = c.width / fontSize;
+
+        // creating an array of drops to each column
+        let drops = [];
+
+        // starting every drop at a y=1 position
+        for (let x = 0; x < columns; x++) drops[x] = 1;
+
+        //drawing the characters
+        function draw() {
+          // painting the background
+          // the trick here is to use opacity
+          // so it will fade out with time
+          ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+          ctx.fillRect(0, 0, c.width, c.height);
+
+          // defining font styles (color and font family/size)
+          ctx.fillStyle = "#0F0";
+          ctx.font = `${fontSize}px arial`;
+
+          // drawing the characters
+          for (let i = 0; i < drops.length; i++) {
+            // get a random letter from the array
+            const text = letters[Math.floor(Math.random() * letters.length)];
+
+            // drawing the character
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            // moving the drop to the beginning of the canvas when it reaches the bottom
+            // or when the random expression is true in order to make the rain randomly
+            if (drops[i] * fontSize > c.height && Math.random() > 0.975)
+              drops[i] = 0;
+
+            // moving the drop in the Y coordinate
+            drops[i]++;
+          }
+
+          // recursive call to draw frame by frame
+          window.requestAnimationFrame(draw);
+        }
+
+        draw()
+    </script>
+</body>
+</html>
