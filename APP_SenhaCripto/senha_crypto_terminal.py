@@ -1,3 +1,6 @@
+# Este código foi escrito por [MSCHelp]
+# Data: [19/05/23]
+# Descrição: Criptografar uma palavra ou senha, irá criar uma chave e uma senha criptografada e depois a opção para descriptografar.
 from cryptography.fernet import Fernet
 
 def criptografar():
