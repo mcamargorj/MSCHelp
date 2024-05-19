@@ -11,11 +11,13 @@
         <tr>
             <th>Nome</th>
             <th>E-mail</th>
+            <th>Permissão</th>
         </tr>
         {% for usuario in usuarios %}
         <tr>
             <td>{{ usuario[1] }}</td>
             <td>{{ usuario[2] }}</td>
+            <td>{{ usuario[4] }}</td>
         </tr>
         {% endfor %}
     </table>

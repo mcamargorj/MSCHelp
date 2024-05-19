@@ -3,8 +3,16 @@ from werkzeug.security import generate_password_hash
 import os
 from datetime import datetime
 from flask import request 
+import re
 
-# Função para criar um novo usuário
+def validar_email(email):
+    """Função para validar o formato do email."""
+    # Padrão de expressão regular para validar email
+    padrao_email = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(padrao_email, email)
+
+
+
 def criar_usuario():
     if request.method == 'POST':
         # Conectar ao banco de dados MySQL/MariaDB - Utilizar o MySQL do seu servidor
@@ -23,6 +31,11 @@ def criar_usuario():
         email = request.form['email']
         senha = request.form['senha']
 
+        # Validar o formato do email
+        if not validar_email(email):
+            print("Email inválido.")
+            return False
+
         # Criptografar a senha usando Werkzeug
         password_hash = generate_password_hash(senha)
 
@@ -30,12 +43,13 @@ def criar_usuario():
         novo_usuario = {
             "nome": nome,
             "email": email,
-            "password": senha  # A senha em texto simples
+            "password": password_hash,  # A senha em texto simples
+            "role": 'user' # Definir nível de permissão padrão para todos os usuários
         }
 
         # Inserir o novo usuário na tabela
-        sql = "INSERT INTO usuarios (nome, email, password) VALUES (%s, %s, %s)"
-        valores = (novo_usuario["nome"], novo_usuario["email"], password_hash)
+        sql = "INSERT INTO usuarios (nome, email, password, role) VALUES (%s, %s, %s, %s)"
+        valores = (novo_usuario["nome"], novo_usuario["email"], novo_usuario["password"], novo_usuario["role"])
 
         cursor.execute(sql, valores)
 
@@ -46,15 +60,12 @@ def criar_usuario():
         cursor.close()
         conexao.close()
 
-        print("Novo usuário inserido com sucesso!")  # Mensagem para indicar sucesso
-        #
+        #print("Novo usuário inserido com sucesso!")  # Mensagem para indicar sucesso
         return True
     else:
+        
         return False
 
-
-
-# Função para remover um usuário existente
 # Função para remover um usuário existente
 def remover_usuario():
     if request.method == 'POST':
@@ -66,31 +77,41 @@ def remover_usuario():
             database="MSCHELP"
         )
 
-        # Criar um cursor para executar comandos SQL
-        cursor = conexao.cursor()
-
         # Receber o email do usuário a ser removido via formulário
         email_usuario = request.form['email']
 
-        # Comando SQL para deletar o usuário com o email especificado
-        sql = "DELETE FROM usuarios WHERE email = %s"
-        valor = (email_usuario,)
-
-        # Executar o comando SQL
-        cursor.execute(sql, valor)
-
-        # Confirmar a remoção
-        conexao.commit()
-
-        # Fechar cursor e conexão
+        # Validar o formato do email
+        if not validar_email(email_usuario):
+            print("Email inválido.")
+            return False
+        # Verifica se o e-mail existe na base de dados
+        cursor = conexao.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email_usuario,))
+        user = cursor.fetchone()
         cursor.close()
-        conexao.close()
 
-        print("Usuário removido com sucesso!")  # Mensagem para indicar sucesso
+        if user:
+            # Criar um cursor para executar comandos SQL
+            cursor = conexao.cursor()
+            # Comando SQL para deletar o usuário com o email especificado
+            sql = "DELETE FROM usuarios WHERE email = %s"
+            valor = (email_usuario,)
 
-        return True
+            # Executar o comando SQL
+            cursor.execute(sql, valor)
+
+            # Confirmar a remoção
+            conexao.commit()
+
+            # Fechar cursor e conexão
+            cursor.close()
+            conexao.close()
+            return True
+        else:
+            return False
+        
     else:
-        return False
+        return False   
 
 
 
@@ -122,6 +143,7 @@ def listar_usuarios():
     for usuario in usuarios:
         print("Nome:", usuario[1])
         print("Email:", usuario[2])
+        print("Permissão:", usuario[4])
         # Você pode adicionar mais campos aqui conforme necessário
 
     # Exibir resumo
@@ -136,28 +158,7 @@ def listar_usuarios():
     # Retornar os usuários
     return usuarios
 
-# Função principal para exibir o menu de opções
-def main():
-    while True:
-        print("\nSelecione uma opção:")
-        print("1. Criar usuário")
-        print("2. Remover usuário")
-        print("3. Listar usuários")
-        print("4. Sair")
 
-        opcao = input("Opção: ")
-
-        if opcao == "1":
-            criar_usuario()
-        elif opcao == "2":
-            remover_usuario()
-        elif opcao == "3":
-            listar_usuarios()
-        elif opcao == "4":
-            print("Saindo...")
-            break
-        else:
-            print("Opção inválida. Por favor, selecione uma opção válida.")
 
 if __name__ == "__main__":
     main()

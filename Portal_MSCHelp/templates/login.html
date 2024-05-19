@@ -6,8 +6,45 @@
     <title>Login</title>
     <!-- Adicionar links para o Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            display: flex;
+            align-items: center; /* Centralizar verticalmente */
+            justify-content: center; /* Centralizar horizontalmente */
+        }
+
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .alert-danger {
+            color: #aa200d;
+            background-color: #f0e6d8;
+            border-color: #d6e9c6;
+        }
+        .text-center {
+             text-align: center;
+        }
+
+</style>
 </head>
 <body>
+    {% if sucesso == True %}
+    <div class="alert alert-success text-center" role="alert">
+    Usuário criado com sucesso!
+    </div>
+{% elif sucesso == False %}
+    <div class="alert alert-danger text-center" role="alert">
+    Erro ao criar usuário: {{ erro }}
+    </div>
+{% endif %}
+
         {% if mensagem %}
             <p style="color: red;">{{ mensagem }}</p>
         {% endif %}

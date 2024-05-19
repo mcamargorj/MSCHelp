@@ -86,6 +86,11 @@
             background-color: #dff0d8;
             border-color: #d6e9c6;
         }
+        .alert-danger {
+            color: #aa200d;
+            background-color: #f0e6d8;
+            border-color: #d6e9c6;
+        }
         .text-center {
              text-align: center;
         }
@@ -95,19 +100,26 @@
 </head>
 <body>
     <h1>Painel Administrativo</h1>
-
-
-        {% if sucesso %}
-    <div class="alert alert-success text-center" role="alert">
+    {% if sucesso == True %}
+        <div class="alert alert-success text-center" role="alert">
         Usuário criado com sucesso!
-    </div>
-        {% endif %}
+        </div>
+    {% elif sucesso == False %}
+        <div class="alert alert-danger text-center" role="alert">
+        Erro ao criar usuário: {{ erro }}
+        </div>
+    {% endif %}
 
-        {% if delete %} 
-    <div class="alert alert-success text-center" role="alert">
-        Usuário removido com sucesso!
-    </div>
-        {% endif %}
+    {% if delete == True %}
+        <div class = "alert alert-success text-center" role="alert">
+            Usuário removido com sucesso!
+        </div>
+    {% elif delete == False %}
+        <div class = "alert alert-danger text-center" role="alert">
+            Erro ao remover usuário: {{erro}}
+    {% endif %}
+        </div>
+       
 
     <ul>
         <li>
