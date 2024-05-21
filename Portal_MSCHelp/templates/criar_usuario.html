@@ -14,12 +14,18 @@
     {% endif %}
 
     <form action="/criar_usuario" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required><br><br>
+        <div>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required><br><br>
+        </div>
+        <div>
         <label for="email">Email:</label>
-        <input type="text" id="email" name="email" required><br><br>
+        <input type="email" id="email" name="email" required><br><br>
+        </div>
+        <div>
         <label for="senha">Senha:</label>
         <input type="password" id="senha" name="senha" required><br><br>
+        </div>
         <button type="submit">Criar</button>
     </form>
     

@@ -1,105 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        li {
-            display: inline-block;
-            margin: 0 10px;
-        }
-
-        button {
-            background-color: #4c6baf;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #1f76f8;
-        }
-
-        #conteudo {
-            margin: 20px auto;
-            max-width: 600px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #0834ac;
-            color: white;
-        }
-
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            display: flex;
-            align-items: center; /* Centralizar verticalmente */
-            justify-content: center; /* Centralizar horizontalmente */
-        }
-
-        .alert-success {
-            color: #3c763d;
-            background-color: #dff0d8;
-            border-color: #d6e9c6;
-        }
-        .alert-danger {
-            color: #aa200d;
-            background-color: #f0e6d8;
-            border-color: #d6e9c6;
-        }
-        .text-center {
-             text-align: center;
-        }
-
-
-    </style>
+    <!-- Adicionar icone na página -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/images/faviconmschelp.ico">
+    <!-- Adicionar painel.css ao template para aplicações flask, por isso o url_for(...)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/painel.css') }}">
+    <!-- script animação do cubo -->
+    <script src="{{ url_for('static', filename='js/conteudo.js') }}"> </script>
 </head>
 <body>
-    <h1>Painel Administrativo</h1>
+    <h1>Painel Administrativo</h1> 
+    
+    <!-- condição para interação após criar_usuairio.html-->
     {% if sucesso == True %}
         <div class="alert alert-success text-center" role="alert">
         Usuário criado com sucesso!
@@ -109,7 +24,7 @@
         Erro ao criar usuário: {{ erro }}
         </div>
     {% endif %}
-
+    <!-- condição para interação após remover_usuairio.html-->
     {% if delete == True %}
         <div class = "alert alert-success text-center" role="alert">
             Usuário removido com sucesso!
@@ -134,21 +49,13 @@
     </ul>
 
     <!-- Div para exibir o conteúdo dinâmico -->
-    <div id="conteudo"> </div>
-            
-   
+    <div id="conteudo">
+        
+    </div>
+
+    <p class="text-center mt-3"> Retorne para o <a href="{{ url_for('dashboard', nome=session['nome']) }}">Dashboard!</a></p>
 
 
-    <!-- Script para carregar os templates dinamicamente -->
-    <script>
-        function carregarTemplate(rota) {
-            fetch(rota)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('conteudo').innerHTML = html;
-                })
-                .catch(error => console.error('Erro ao carregar o template:', error));
-        }
-    </script>
+
 </body>
 </html>

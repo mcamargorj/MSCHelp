@@ -1,58 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="static/images/faviconmschelp.ico">
     <title>Login</title>
     <!-- Adicionar links para o Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Adicionar login.css ao template para aplicações flask, por isso o url_for(...)-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 
-    <style>
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            display: flex;
-            align-items: center; /* Centralizar verticalmente */
-            justify-content: center; /* Centralizar horizontalmente */
-        }
-
-        .alert-success {
-            color: #3c763d;
-            background-color: #dff0d8;
-            border-color: #d6e9c6;
-        }
-        .alert-danger {
-            color: #aa200d;
-            background-color: #f0e6d8;
-            border-color: #d6e9c6;
-        }
-        .text-center {
-             text-align: center;
-        }
-
-</style>
 </head>
 <body>
-    {% if sucesso == True %}
-    <div class="alert alert-success text-center" role="alert">
-    Usuário criado com sucesso!
-    </div>
-{% elif sucesso == False %}
-    <div class="alert alert-danger text-center" role="alert">
-    Erro ao criar usuário: {{ erro }}
-    </div>
-{% endif %}
 
-        {% if mensagem %}
-            <p style="color: red;">{{ mensagem }}</p>
-        {% endif %}
+
         
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h2 class="mb-4">Login</h2>
+
+
+    <!-- Mensagem será exibida caso haja algum erro na autenticação do usuário -->
+
+    {% if mensagem %}
+    <div class="alert alert-danger text-center" role="alert">
+    {{ mensagem }}
+    </div>
+{% endif %}
+                <div class = "container1" >
+                    <img src="/static/images/logo1.png" aligh="center" alt="MSCHELP">
+                </div>
+                <!-- <h2 class="mb-4">Login</h2> -->
                 <form method="POST">
                     <div class="form-group">
                         <label for="email">Email</label>
@@ -65,12 +43,11 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
-                <p><br>Não tem uma conta? <a href="{{ url_for('register') }}">Registre-se aqui</a></p>
+                <p class="text-center mt-3">Não tem uma conta? <a href="{{ url_for('register') }}">Registre-se aqui</a></p>
                 
             </div>
         </div>
     </div>
-    <!-- Adicionar links para o Bootstrap JavaScript -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
 </body>
 </html>

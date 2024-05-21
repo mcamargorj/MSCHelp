@@ -3,14 +3,15 @@ from werkzeug.security import generate_password_hash
 import os
 from datetime import datetime
 from flask import request 
-import re
 
-def validar_email(email):
-    """Função para validar o formato do email."""
-    # Padrão de expressão regular para validar email
-    padrao_email = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return re.match(padrao_email, email)
 
+
+def email_existe(email,conexao):
+    cursor = conexao.cursor()
+    cursor.execute("SELECT COUNT(*) FROM usuarios WHERE email = %s", (email,))
+    count = cursor.fetchone()[0]
+    cursor.close()
+    return count > 0
 
 
 def criar_usuario():
@@ -30,15 +31,12 @@ def criar_usuario():
         nome = request.form['nome']
         email = request.form['email']
         senha = request.form['senha']
-
-        # Validar o formato do email
-        if not validar_email(email):
-            print("Email inválido.")
-            return False
-
         # Criptografar a senha usando Werkzeug
         password_hash = generate_password_hash(senha)
 
+        if email_existe(email,conexao):
+            return False
+        
         # Dados do novo usuário
         novo_usuario = {
             "nome": nome,
@@ -59,9 +57,9 @@ def criar_usuario():
         # Fechar cursor e conexão
         cursor.close()
         conexao.close()
-
-        #print("Novo usuário inserido com sucesso!")  # Mensagem para indicar sucesso
+        
         return True
+    
     else:
         
         return False
@@ -80,38 +78,29 @@ def remover_usuario():
         # Receber o email do usuário a ser removido via formulário
         email_usuario = request.form['email']
 
-        # Validar o formato do email
-        if not validar_email(email_usuario):
-            print("Email inválido.")
+        if not email_existe(email_usuario,conexao):
             return False
-        # Verifica se o e-mail existe na base de dados
+
+        # Criar um cursor para executar comandos SQL
         cursor = conexao.cursor()
-        cursor.execute("SELECT * FROM usuarios WHERE email = %s", (email_usuario,))
-        user = cursor.fetchone()
+        # Comando SQL para deletar o usuário com o email especificado
+        sql = "DELETE FROM usuarios WHERE email = %s"
+        valor = (email_usuario,)
+
+        # Executar o comando SQL
+        cursor.execute(sql, valor)
+
+        # Confirmar a remoção
+        conexao.commit()
+
+        # Fechar cursor e conexão
         cursor.close()
-
-        if user:
-            # Criar um cursor para executar comandos SQL
-            cursor = conexao.cursor()
-            # Comando SQL para deletar o usuário com o email especificado
-            sql = "DELETE FROM usuarios WHERE email = %s"
-            valor = (email_usuario,)
-
-            # Executar o comando SQL
-            cursor.execute(sql, valor)
-
-            # Confirmar a remoção
-            conexao.commit()
-
-            # Fechar cursor e conexão
-            cursor.close()
-            conexao.close()
-            return True
-        else:
-            return False
-        
+        conexao.close()
+        return True
+    
     else:
-        return False   
+        return False
+
 
 
 
@@ -160,5 +149,4 @@ def listar_usuarios():
 
 
 
-if __name__ == "__main__":
-    main()
+

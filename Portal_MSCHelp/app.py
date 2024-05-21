@@ -4,8 +4,9 @@ import mysql.connector
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
 
+
 # Importar as funções do kit ferramentas para utilizar no painel_admin
-from app_ferramentas import criar_usuario, remover_usuario, listar_usuarios, validar_email
+from app_ferramentas import criar_usuario, remover_usuario, listar_usuarios, email_existe
 
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
@@ -17,12 +18,8 @@ conexao = mysql.connector.connect(
     password=os.environ.get('MYSQL_PASSWORD'),
     database="MSCHELP"
 )
-def email_existe(email):
-    cursor = conexao.cursor()
-    cursor.execute("SELECT COUNT(*) FROM usuarios WHERE email = %s", (email,))
-    count = cursor.fetchone()[0]
-    cursor.close()
-    return count > 0
+
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -37,17 +34,20 @@ def login():
             stored_password_hash = user[3]  # A quarta coluna (índice 3) contém o hash da senha
             if check_password_hash(stored_password_hash, password):
                 session['user'] = user[0]
+                session['nome'] = user[1]
                 session['role'] = user[4]
-                return redirect(url_for('dashboard', nome=user[1]))
+                return redirect(url_for('dashboard', nome=session['nome']))
             else:
                 return render_template('login.html', mensagem='Usuário ou senha incorretos.')
     
     return render_template('login.html')
 
-@app.route('/dashboard/<nome>')
-def dashboard(nome):
+@app.route('/dashboard')
+def dashboard():
     if 'user' in session:
         # Aqui você pode usar a variável 'nome' que foi passada
+        nome = session.get('nome')
+
         return render_template('dashboard.html', nome=nome)
     else:
         return redirect(url_for('login'))
@@ -61,10 +61,8 @@ def register():
         password = escape(request.form['password'])
         password_hash = generate_password_hash(password)
         
-        if not validar_email(email):
-            return render_template('register.html', sucesso=False, erro="Email inválido!")
-        
-        if email_existe(email):
+
+        if email_existe(email,conexao):
             return render_template('register.html', sucesso=False, erro="Este email já está cadastrado!")
         
         
@@ -72,7 +70,8 @@ def register():
         cursor.execute("INSERT INTO usuarios (nome, email, password, role) VALUES (%s, %s, %s, %s)", (nome, email, password_hash, 'user'))
         conexao.commit()
         cursor.close()
-        return render_template('login.html', sucesso=True)
+        
+        return render_template('register.html', sucesso=True)
         
     else:
         return render_template('register.html')
@@ -105,7 +104,7 @@ def criar_usuario_form():
             if criar_usuario():
                 return render_template('painel_admin.html', sucesso=True)
             else:
-                return render_template('painel_admin.html', sucesso=False, erro="Email inválido!")
+                return render_template('painel_admin.html', sucesso=False, erro="E-mail já cadastrado!")
     else:
         return redirect(url_for('login'))
 
@@ -119,7 +118,7 @@ def remover_usuario_form():
             if remover_usuario():
                 return render_template('painel_admin.html', delete=True)
             else:
-                return render_template('painel_admin.html', delete=False, erro="Email inválido!")        
+                return render_template('painel_admin.html', delete=False, erro="E-mail não cadastrado!")        
     else:
         return redirect(url_for('login'))
     
