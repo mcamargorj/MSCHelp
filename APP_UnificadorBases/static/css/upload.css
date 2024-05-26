@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    background-image: url("/static/images/fundo1.png");
+    background-size: cover; /* Ajusta o tamanho da imagem para cobrir toda a div */
+    background-position: center; /* Centraliza a imagem */
+    background-color: rgba(255, 255, 255, 0.1); /* Cor de fundo com transparência */
+    opacity: 0.91;
+        }
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 15px;
+    text-align: center; /* Para centralizar o conteúdo */            
+}
+.imagens img {
+    display: inline-block; /* Para que as imagens fiquem uma ao lado da outra */
+    margin: 10px; /* Espaçamento entre as imagens */
+    vertical-align: middle; /* Alinhamento vertical */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #333;
+}
+form {
+    text-align: center;
+}
+input[type=file] {
+    display: none;
+}
+.custom-file-upload {
+    border: 2px solid #ccc;
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+}
+.custom-file-upload:hover {
+    background-color: #45a049;
+}
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.button:hover {
+    background-color: #45a049;
+}
+.button-disabled {
+    opacity: 0; /* Defina a opacidade que desejar */
+    pointer-events: none; /* Impede que o botão seja clicável */
+}           
+
+.arquivos-enviados {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-family: Arial, sans-serif; /* Escolha uma fonte suave */
+    font-size: 14px; /* Tamanho da fonte */
+    color: #333; /* Cor do texto */
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+
+.success-message {
+    color: green;
+    font-weight: bold;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+/* Adicione este trecho ao seu CSS */
+.img-download {
+    width: 70px; /* Ajuste o tamanho conforme necessário */
+    height: auto; /* Mantém a proporção da imagem */
+}
