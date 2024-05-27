@@ -5,7 +5,7 @@ import openpyxl
 import xlrd
 
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta'
+app.secret_key = os.urandom(24)
 
 DIRETORIO_UPLOADS = 'uploads'
 EXTENSOES_PERMITIDAS = {'csv', 'xlsx', 'xls'}
