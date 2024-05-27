@@ -10,19 +10,21 @@ body {
     opacity: 0.91;
         }
 .container {
-    max-width: 500px;
+    max-width: 300px;
     margin: auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-top: 15px;
-    text-align: center; /* Para centralizar o conteúdo */            
+    text-align: center;
+    position: relative;          
 }
 .imagens img {
     display: inline-block; /* Para que as imagens fiquem uma ao lado da outra */
     margin: 10px; /* Espaçamento entre as imagens */
     vertical-align: middle; /* Alinhamento vertical */
+   
 }
 
 h2 {
@@ -71,7 +73,7 @@ input[type=file] {
 }           
 
 .arquivos-enviados {
-    max-width: 500px;
+    max-width: 300px;
     margin: auto;
     padding: 20px;
     background-color: #fff;
@@ -116,4 +118,46 @@ tr:hover {
 .img-download {
     width: 70px; /* Ajuste o tamanho conforme necessário */
     height: auto; /* Mantém a proporção da imagem */
+}
+
+.img-reload{
+    width: 40px; /* Ajuste o tamanho conforme necessário */
+    height: auto; /* Mantém a proporção da imagem */
+    
+}
+
+.reload-container {
+    position: absolute;
+    top: 10px; /* ajuste conforme necessário */
+    right: 10px; /* ajuste conforme necessário */
+}
+
+#enviar img {
+    display: none;
+}
+
+#enviar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.enviar-img {
+    width: 50px; /* Defina o tamanho desejado */
+    height: 50px; /* Defina o tamanho desejado */
+}
+
+#unificar img {
+    display: none;
+}
+
+#unificar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unificar-img {
+    width: 50px; /* Defina o tamanho desejado */
+    height: 50px; /* Defina o tamanho desejado */
 }

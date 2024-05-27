@@ -1,15 +1,20 @@
 from flask import Flask, render_template, request, session, redirect, url_for, send_file
 import pandas as pd
 import os
+import openpyxl
+import xlrd
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'sua_chave_secreta'
 
 DIRETORIO_UPLOADS = 'uploads'
 EXTENSOES_PERMITIDAS = {'csv', 'xlsx', 'xls'}
 
 app.config['DIRETORIO_UPLOADS'] = DIRETORIO_UPLOADS
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limite de 16 MB para uploads
+
+# Certifique-se de que o direório de uploads exista
+os.makedirs(DIRETORIO_UPLOADS, exist_ok=True)
 
 # Definindo a variável global
 arquivo_gerado = None
@@ -23,6 +28,66 @@ def extensoes_permitidas(arquivos):
         if extensao not in EXTENSOES_PERMITIDAS:
             return False
     return True
+
+# Função que verifica somente se o arquivo CSV existe
+def verificar_padrao_arquivo_csv(arquivo):
+    """Verifica se o arquivo é um CSV (sempre retorna True para CSV)."""
+    return True
+
+# Função que verificar se o arquivo XLS tem mais de uma planilha e se nas 10 primeiras linhas existe mais de uma célula preenchida.
+def verificar_padrao_arquivo_xls(arquivo):
+    # Abrindo o arquivo Excel
+    workbook = xlrd.open_workbook(arquivo)
+    
+    # Verifica o número de planilhas
+    if len(workbook.sheet_names()) != 1:
+        return False
+    
+    # Obtém a primeira planilha
+    sheet = workbook.sheet_by_index(0)
+    
+    # Obtém o número de linhas e colunas
+    num_rows = sheet.nrows
+    num_cols = sheet.ncols
+    
+    # Define o número máximo de células preenchidas nas primeiras 10 linhas
+    max_cells_filled = 1
+    
+    # Verifica as primeiras 10 linhas
+    for row in range(min(num_rows, 10)):
+        cells_filled = sum(1 for col in range(num_cols) if sheet.cell_value(row, col))
+        if cells_filled > max_cells_filled:
+            # Se encontrar mais de uma célula preenchida, aceita o arquivo
+            return True
+    
+    # Se não encontrar mais de uma célula preenchida nas primeiras 10 linhas, recusa o arquivo
+    return False
+
+# Função que verificar se o arquivo XLSX tem mais de uma planilha e se nas 10 primeiras linhas existe mais de uma célula preenchida.
+
+def verificar_padrao_arquivo_xlsx(arquivo):
+    # Abrindo o arquivo Excel
+    workbook = openpyxl.load_workbook(arquivo)
+    
+    # Verifica o número de planilhas
+    if len(workbook.sheetnames) != 1:
+        return False
+    
+    # Obtém a primeira planilha
+    sheet = workbook.active
+    
+    # Define o número máximo de células preenchidas nas primeiras 10 linhas
+    max_cells_filled = 1
+    
+    # Verifica as primeiras 10 linhas
+    for row in range(1, min(sheet.max_row, 11)):
+        cells_filled = sum(1 for col in range(1, sheet.max_column + 1) if sheet.cell(row=row, column=col).value)
+        if cells_filled > max_cells_filled:
+            # Se encontrar mais de uma célula preenchida, aceita o arquivo
+            return True
+    
+    # Se não encontrar mais de uma célula preenchida nas primeiras 10 linhas, recusa o arquivo
+    return False
 
 @app.route('/', methods=['POST'])
 def upload_arquivo():
@@ -54,7 +119,26 @@ def upload_arquivo():
         arquivos_enviados.append(nome_arquivo)
         session['arquivos_enviados'] = arquivos_enviados
 
-    session['sucesso'] = "Arquivos enviados com sucesso!"
+        # Verifica se o arquivo é um CSV
+        if nome_arquivo.lower().endswith('.csv'):
+            if not verificar_padrao_arquivo_csv(caminho_arquivo):
+                mensagem_erro = f'Conteúdo incorreto!<br>Caracteres permitidos [,] ou [;].'
+                limpar()
+                return redirect(url_for('formulario_upload', erro=mensagem_erro))
+        # Verifica se o arquivo é uma tabela XLS
+        elif nome_arquivo.lower().endswith('.xls'):
+            if not verificar_padrao_arquivo_xls(caminho_arquivo):
+                mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
+                limpar()
+                return redirect(url_for('formulario_upload', erro=mensagem_erro))
+        # Verifica se o arquivo é uma tabela XLSX
+        elif nome_arquivo.lower().endswith('.xlsx'):
+            if not verificar_padrao_arquivo_xlsx(caminho_arquivo):
+                mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
+                limpar()
+                return redirect(url_for('formulario_upload', erro=mensagem_erro))
+
+    session['sucesso'] = "Enviado com sucesso!"
     return render_template('upload.html', arquivos_enviados=arquivos_enviados, sucesso=session['sucesso'])
 
 @app.route('/processar')
@@ -109,7 +193,7 @@ def limpar():
     global arquivo_gerado
     arquivo_gerado = None
 
-@app.route('/')
+@app.route('/', methods = ['GET'])
 def formulario_upload():
     global arquivo_gerado
     arquivos_enviados = session.get('arquivos_enviados')
@@ -134,6 +218,17 @@ def download_base():
         # Renderiza o formulário de upload com possível mensagem de erro
         erro = "Não existe arquivo para Download!"
         return render_template('upload.html', erro=erro)
+    
+@app.route('/restaurar')
+def restaurar():
+    global arquivo_gerado
+    if arquivo_gerado is not None:
+        limpar()
+        return redirect(url_for('upload_arquivo'))
+    else:
+        # Renderiza o formulário de upload com possível mensagem de erro
+        limpar()
+        return redirect(url_for('upload_arquivo'))
 
 if __name__ == '__main__':
     app.run(debug=True)
