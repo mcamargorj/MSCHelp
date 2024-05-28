@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ninja Excel</title>
+     <!-- Adicionar favicon -->
+     <link rel="shortcut icon" type="image/x-icon" href="static/images/favicon.ico">
+     <!-- Difini logo do app ao salvar link no IOS -->
+     <link rel="apple-touch-icon" href="/static/images/plan_ios.png"> 
+     <!-- Adicionar upload.css ao template para aplicações flask, por isso o url_for(...)-->
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> 
+
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="reload-container">
+            <form action="/restaurar" method="GET">
+               
+                <img src="/static/images/reload.png" alt="Recarregar" class="img-reload" style="cursor: pointer;" onclick="this.parentNode.submit();"/>
+                
+            </form>
+        </div>
+
+        {% if sucesso %}
+        <div class="success-message">{{ sucesso }}</div>
+        {% endif %}
+        {% if erro %}
+            <div class="error-message">{{ erro | safe }}</div>
+        {% endif %}
+        
+        
+        <div class="logo">
+            
+            <img src="/static/images/ninja_excel.png" alt="xls">
+          
+        </div>   
+        <h2>Ninja Excel</h2>
+        <div class="imagens">
+            
+            <img src="/static/images/xls.png" alt="xls">
+            <img src="/static/images/xlsx.png" alt="xlsx">
+        </div>
+        <form method="POST" action="" enctype="multipart/form-data" onsubmit="Enviar_Carregando()">
+            <label for="arquivos" class="custom-file-upload">
+                Selecionar Arquivos
+            </label>
+            <input type="file" name="arquivos" id="arquivos" accept=".xlsx, .xls" multiple required>
+            <br><br>
+            <button type="submit" class="button">Enviar</button>
+            <div id="enviar">
+                <img src="/static/images/loading.gif" alt="Carregando..."class="enviar-img">
+            </div>
+            
+        </form>
+        <div class="arquivos-enviados">
+            
+            <table>
+                <h3>Arquivos Enviados:</h3>
+                <tbody>
+                    {% for arquivo in arquivos_enviados %}
+                        <tr>
+                            <td>{{ arquivo }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div><br>
+        
+
+        <form action="/processar" method="GET" onsubmit="Unificar_Carregando()">
+            <div id="unificar">
+                <img src="/static/images/loading.gif" alt="Carregando..."class="unificar-img">
+            </div>
+            <button type="submit" class="button">Juntar</button>
+        </form>
+        <form action="/download" method="GET">
+            {% if arquivo_gerado %}                              
+                <img src="/static/images/btn_planilha.png" alt="Download" class="img-download" style="cursor: pointer;" onclick="this.parentNode.submit();" />
+            {% else %}
+                <!-- Exibir a imagem desabilitada -->
+                <img src="/static/images/btn_planilha.png" alt="Download" class="img-download button-disabled" style="cursor: not-allowed;" />
+            {% endif %}
+        </form>
+        
+    </div>
+
+    <script>
+        function Enviar_Carregando() {
+    var loadingImg = document.querySelector('#enviar img');
+    loadingImg.style.display = 'block';
+}
+    </script>
+    <script>
+        function Unificar_Carregando() {
+    var loadingImg = document.querySelector('#unificar img');
+    loadingImg.style.display = 'block';
+}
+    </script>
+</body>
+</html>
