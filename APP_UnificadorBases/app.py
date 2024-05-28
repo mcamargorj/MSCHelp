@@ -91,55 +91,62 @@ def verificar_padrao_arquivo_xlsx(arquivo):
 
 @app.route('/', methods=['POST'])
 def upload_arquivo():
-    """Rota para lidar com o envio de arquivos."""
-    if 'arquivos' not in request.files:
-        mensagem_erro = 'Nenhum arquivo enviado. Por favor, selecione um arquivo e tente novamente.'
-        return redirect(url_for('formulario_upload', erro=mensagem_erro))
-
-    arquivos = request.files.getlist('arquivos')  # Obter a lista de arquivos enviados
-
-    print("Headers da requisição:", request.headers)
-    print("Content-Type:", request.content_type)
-
-    if not extensoes_permitidas(arquivos):
-        mensagem_erro = 'Extensão de arquivo não permitida. Por favor, envie arquivos CSV, XLSX ou XLS.'
-        return redirect(url_for('formulario_upload', erro=mensagem_erro))
-
-    for arquivo in arquivos:
-        if arquivo.filename == '':
-            mensagem_erro = 'Nenhum arquivo selecionado. Por favor, selecione um arquivo e tente novamente.'
+    try:
+        """Rota para lidar com o envio de arquivos."""
+        if 'arquivos' not in request.files:
+            mensagem_erro = 'Nenhum arquivo enviado.'
             return redirect(url_for('formulario_upload', erro=mensagem_erro))
 
-        nome_arquivo = arquivo.filename
-        caminho_arquivo = os.path.join(app.config['DIRETORIO_UPLOADS'], nome_arquivo)
-        print(f"Salvando arquivo: {caminho_arquivo}")
-        arquivo.save(caminho_arquivo)
+        arquivos = request.files.getlist('arquivos')  # Obter a lista de arquivos enviados
 
-        arquivos_enviados = session.get('arquivos_enviados', [])
-        arquivos_enviados.append(nome_arquivo)
-        session['arquivos_enviados'] = arquivos_enviados
+        #print("Headers da requisição:", request.headers)
+        #print("Content-Type:", request.content_type)
 
-        # Verifica se o arquivo é um CSV
-        if nome_arquivo.lower().endswith('.csv'):
-            if not verificar_padrao_arquivo_csv(caminho_arquivo):
-                mensagem_erro = f'Conteúdo incorreto!<br>Caracteres permitidos [,] ou [;].'
-                limpar()
-                return redirect(url_for('formulario_upload', erro=mensagem_erro))
-        # Verifica se o arquivo é uma tabela XLS
-        elif nome_arquivo.lower().endswith('.xls'):
-            if not verificar_padrao_arquivo_xls(caminho_arquivo):
-                mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
-                limpar()
-                return redirect(url_for('formulario_upload', erro=mensagem_erro))
-        # Verifica se o arquivo é uma tabela XLSX
-        elif nome_arquivo.lower().endswith('.xlsx'):
-            if not verificar_padrao_arquivo_xlsx(caminho_arquivo):
-                mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
-                limpar()
+        if not extensoes_permitidas(arquivos):
+            mensagem_erro = 'Extensão inválida!'
+            return redirect(url_for('formulario_upload', erro=mensagem_erro))
+
+        for arquivo in arquivos:
+            if arquivo.filename == '':
+                mensagem_erro = 'Nenhum arquivo selecionado.'
                 return redirect(url_for('formulario_upload', erro=mensagem_erro))
 
-    session['sucesso'] = "Enviado com sucesso!"
-    return render_template('upload.html', arquivos_enviados=arquivos_enviados, sucesso=session['sucesso'])
+            nome_arquivo = arquivo.filename
+            caminho_arquivo = os.path.join(app.config['DIRETORIO_UPLOADS'], nome_arquivo)
+            #print(f"Salvando arquivo: {caminho_arquivo}")
+            arquivo.save(caminho_arquivo)
+
+            arquivos_enviados = session.get('arquivos_enviados', [])
+            arquivos_enviados.append(nome_arquivo)
+            session['arquivos_enviados'] = arquivos_enviados
+
+            # Verifica se o arquivo é um CSV
+            if nome_arquivo.lower().endswith('.csv'):
+                if not verificar_padrao_arquivo_csv(caminho_arquivo):
+                    mensagem_erro = f'Conteúdo incorreto!<br>Caracteres permitidos [,] ou [;].'
+                    limpar()
+                    return redirect(url_for('formulario_upload', erro=mensagem_erro))
+            # Verifica se o arquivo é uma tabela XLS
+            elif nome_arquivo.lower().endswith('.xls'):
+                if not verificar_padrao_arquivo_xls(caminho_arquivo):
+                    mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
+                    limpar()
+                    return redirect(url_for('formulario_upload', erro=mensagem_erro))
+            # Verifica se o arquivo é uma tabela XLSX
+            elif nome_arquivo.lower().endswith('.xlsx'):
+                if not verificar_padrao_arquivo_xlsx(caminho_arquivo):
+                    mensagem_erro = f'Conteúdo incorreto!<br>Somente tabela.'
+                    limpar()
+                    return redirect(url_for('formulario_upload', erro=mensagem_erro))
+
+        session['sucesso'] = "Enviado com sucesso!"
+        return render_template('upload.html', arquivos_enviados=arquivos_enviados, sucesso=session['sucesso'])
+
+    except Exception as e:
+        #mensagem_erro = f'Erro ao processar arquivos: {str(e)}'
+        mensagem_erro = f'Erro ao processar arquivos: <br> Verifique se o arquivo contém <br> apenas uma planilha.'
+        limpar()
+        return redirect(url_for('formulario_upload', erro=mensagem_erro))
 
 @app.route('/processar')
 def processar_arquivos():
@@ -182,7 +189,7 @@ def processar_arquivos():
         return redirect(url_for('formulario_upload', download_file=nome_arquivo_saida))
     except Exception as e:
         mensagem_erro = f'Erro ao processar arquivos: {str(e)}'
-        print(mensagem_erro)  # Log de erro
+        limpar()
         return redirect(url_for('formulario_upload', erro=mensagem_erro))
 
 def limpar():
