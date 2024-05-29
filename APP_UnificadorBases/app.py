@@ -3,6 +3,8 @@ import pandas as pd
 import os
 import openpyxl
 import xlrd
+import chardet
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -28,11 +30,16 @@ def extensoes_permitidas(arquivos):
         if extensao not in EXTENSOES_PERMITIDAS:
             return False
     return True
-
+# Função responsável por detectar o encoding do CSV
+def revela_encoding(arquivo):
+    with open(arquivo, 'rb') as f:
+        result = chardet.detect(f.read(10000))
+    return result['encoding']
 # Função que verifica somente se o arquivo CSV existe
 def verificar_padrao_arquivo_csv(arquivo):
     """Verifica se o arquivo é um CSV (sempre retorna True para CSV)."""
     return True
+
 
 # Função que verificar se o arquivo XLS tem mais de uma planilha e se nas 10 primeiras linhas existe mais de uma célula preenchida.
 def verificar_padrao_arquivo_xls(arquivo):
@@ -164,7 +171,8 @@ def processar_arquivos():
             caminho_arquivo = os.path.join(app.config['DIRETORIO_UPLOADS'], arquivo)
             if arquivo.endswith('.csv'):
                 try:
-                    tabela_vendas = pd.read_csv(caminho_arquivo, encoding='utf-8')
+                    encoding_detected = revela_encoding(caminho_arquivo)
+                    tabela_vendas = pd.read_csv(caminho_arquivo, encoding=encoding_detected)
                 except UnicodeDecodeError:
                     tabela_vendas = pd.read_csv(caminho_arquivo, encoding='latin1')
                 except pd.errors.ParserError:
