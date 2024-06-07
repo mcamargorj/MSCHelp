@@ -58,7 +58,7 @@ git remote -v # para exibir as conexões ao Git
 git remote set-url origin git@github.com:"user"/"nome_repo".git
 
 # Gerar chave ssh para o GitHub e adicionar em Deploy com acesso Write.
-sh-keygen -t rsa -b 4096 -C "email_GitHub" 
+ssh-keygen -t rsa -b 4096 -C "email_GitHub" 
 # A chave a ser inserida no Deploy no GitHub é a repo.pub
 dê um nome para a chave "nome_repo" e depois adicione as configurações em .ssh/config
 
