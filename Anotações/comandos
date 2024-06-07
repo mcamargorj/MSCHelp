@@ -33,3 +33,41 @@ senha: senha_Windows
 # curl -X POST -d "nome=rm -rf /" http://seuservidor:5000/
 
 Este comando poderia potencialmente apagar todos os arquivos no servidor, causando uma perda completa de dados e indisponibilidade do serviço.
+
+# Erro de conexão ao GitHub após configurações de novo Repo
+//script
+# Start the SSH agent if not already running
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    eval $(ssh-agent -s)
+fi
+
+# Add SSH key to the agent
+ssh-add -l | grep "id_rsa" > /dev/null || ssh-add ~/.ssh/id_rsa
+
+//comando para atualizar:
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_apk
+
+# Quando o repo é clonado ele clona como http, é preciso remover:
+git remote remove origin   
+# Depois é preciso adicionar
+git remote add origin git@github.com:"user"/"nome_repo".git  
+git branch -M main
+git push -u origin main
+git remote -v # para exibir as conexões ao Git
+git remote set-url origin git@github.com:"user"/"nome_repo".git
+
+# Gerar chave ssh para o GitHub e adicionar em Deploy com acesso Write.
+sh-keygen -t rsa -b 4096 -C "email_GitHub" 
+# A chave a ser inserida no Deploy no GitHub é a repo.pub
+dê um nome para a chave "nome_repo" e depois adicione as configurações em .ssh/config
+
+# modelo arquivo config
+---
+# Configurações para acessar o repositório MSCHelp
+Host github.com-"nome_repo"
+    Hostname github.com
+    User git
+    IdentityFile /home/kali/.ssh/"nome_chave"
+
+---
