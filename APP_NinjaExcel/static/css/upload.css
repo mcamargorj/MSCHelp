@@ -84,6 +84,7 @@ input[type=file] {
 table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Garante que a largura das células seja fixa */
 }
 
 th, td {
@@ -93,6 +94,9 @@ th, td {
     font-family: Arial, sans-serif; /* Escolha uma fonte suave */
     font-size: 14px; /* Tamanho da fonte */
     color: #333; /* Cor do texto */
+    white-space: nowrap; /* Impede a quebra de linha */
+    overflow: hidden; /* Esconde o texto que ultrapassa o limite */
+    text-overflow: ellipsis; /* Adiciona "..." ao final do texto truncado */
 }
 
 th {
