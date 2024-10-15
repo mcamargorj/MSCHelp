@@ -17,7 +17,7 @@ st.set_page_config(
 
 def mostrar_logo():
     logo = Image.open('logo1.png').convert("RGBA")
-    logo = logo.resize((200, 200))  # Redimensiona a imagem para 200x200 pixels
+    logo = logo.resize((175, 175))  # Redimensiona a imagem para 200x200 pixels
     
     # Exibir a imagem diretamente na barra lateral
     st.sidebar.image(logo, use_column_width=True)  # Ajusta o tamanho da imagem à largura da sidebar
