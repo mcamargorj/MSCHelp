@@ -2,4 +2,4 @@
 base = "light"
 
 [server]
-enableStaticServing = true
+enableStaticServing = false
