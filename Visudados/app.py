@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 # Configurar layout da página
 st.set_page_config(
-    page_title="Visualizador de Dados",
+    page_title="Visualizador de Dados CSV",
     page_icon="📊",
     layout="centered",
     initial_sidebar_state="expanded"
@@ -28,7 +28,7 @@ def principal():
 
     mostrar_logo()  # Mostrar a logo na sidebar
 
-    st.header("Faça o upload do seu arquivo de dados")
+    st.header("Faça o upload do seu arquivo de dados (CSV)")
     arquivo_csv = st.file_uploader("Carregar arquivo CSV", type=["csv"], help="Envie seu arquivo CSV aqui")
 
     if arquivo_csv is not None:
