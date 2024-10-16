@@ -10,7 +10,7 @@ import requests
 
 # Configurar layout da página
 st.set_page_config(
-    page_title="Visualizador de Dados",
+    page_title="Visualizador de Dados - VisuCSV",
     page_icon="📊",
     layout="centered",
     initial_sidebar_state="expanded"
@@ -60,7 +60,7 @@ def formatar_coluna_data(dados):
 
 
 def principal():
-    st.title("📊 Análise de Dados Impactante")
+    st.title("📊 Análise de Dados com VisuCSV")
     mostrar_logo()
 
     st.header("Carregue ou forneça a URL do arquivo de dados")
