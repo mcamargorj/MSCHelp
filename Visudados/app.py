@@ -6,6 +6,7 @@ import io
 import chardet
 from PIL import Image
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 import requests
 
 # Configurar layout da página
@@ -47,8 +48,8 @@ def formatar_coluna_data(dados):
             dados['Semestre'] = np.where(dados['Data_Ajustada'].dt.month <= 6, 1, 2)
             dados['Trimestre'] = ((dados['Data_Ajustada'].dt.month - 1) // 3) + 1
             dados['Mês-Ano'] = dados['Data_Ajustada'].dt.strftime('%m/%Y')
-            dados['Data_ajustada'] = dados['Data_Ajustada'].dt.strftime('%d/%m/%Y')
-            dados = dados.drop(columns=[coluna])
+            dados['Data_Ajustada'] = dados['Data_Ajustada'].dt.strftime('%d/%m/%Y')
+            #dados = dados.drop(columns=[coluna])
 
         except Exception as e:
             st.warning(f"Não foi possível converter a coluna '{coluna}' para data: {e}")
@@ -58,21 +59,39 @@ def formatar_coluna_data(dados):
     return dados
 
 
-
 def principal():
     st.title("📊 Análise de Dados com VisuCSV")
     mostrar_logo()
 
     st.header("Carregue ou forneça a URL do arquivo de dados")
 
+    # Inicializa o session state se não existir
+    if 'url_csv' not in st.session_state:
+        st.session_state.url_csv = ""
+
     # Opção de carregar um arquivo CSV
-    arquivo_csv = st.file_uploader("Carregar arquivo CSV", type=["csv"], help="Envie seu arquivo CSV aqui")
+    arquivo_csv = st.file_uploader("Carregar arquivo CSV.", type=["csv"], help="Envie seu arquivo CSV aqui")
 
     # Opção de fornecer uma URL para o CSV
-    url_csv = st.text_input("Ou insira a URL do arquivo CSV", help="Informe a URL para fazer o download do CSV")
-
+    url_csv = st.text_input("Ou insira a URL do arquivo CSV.", help="Informe a URL para fazer o download do CSV")
     dados = None
 
+    # Botões para carregar bases fictícias
+    st.write("### 📂 Bases Fictícias:")
+    if st.button("Base 1"):
+        st.session_state.url_csv = "https://drive.google.com/uc?id=1FLNVucw0ObcbE6PLoK4hxXV4pPQFqiN7"
+        st.success(f"URL selecionada: {st.session_state.url_csv}")
+
+    if st.button("Base 2"):
+        st.session_state.url_csv = "https://drive.google.com/uc?id=1w_k9ZWPDGiZyZWCaZhTx7lMMTInwlsKP"
+        st.success(f"URL selecionada: {st.session_state.url_csv}")
+
+    # Se a URL não estiver vazia, usa a URL do session state
+    if st.session_state.url_csv:
+        url_csv = st.session_state.url_csv
+        
+
+##
     def detectar_delimitador(conteudo_csv):
         delimitadores = [';', ',', '\t', '|', ' ']
         
@@ -126,7 +145,7 @@ def principal():
         except Exception as e:
             st.error(f"Erro ao baixar ou processar o arquivo CSV da URL: {e}")
             return
-
+    
     if dados is not None:
         # Aplicar a formatação nas colunas de data
         dados = formatar_coluna_data(dados)
@@ -143,7 +162,7 @@ def principal():
         # Seção de visualizações
         st.sidebar.header("Visualizações")
         opcoes_graficos = [
-            "Gráfico de Barras", "Gráfico de Pizza", "Gráfico de Linhas", 
+            "Gráfico de Barras 1","Gráfico de Barras 2", "Gráfico de Barras 3", "Gráfico de Pizza", "Gráfico de Linhas 1","Gráfico de Linhas 2", 
             "Gráfico de Dispersão", "Histograma", 
             "Box Plot", "Gráfico de Violino", "Gráfico de Área"
         ]
@@ -166,37 +185,185 @@ def principal():
         tamanho_grafico = st.sidebar.slider("Tamanho do Gráfico (5 a 15)", min_value=5, max_value=15, value=10)
         largura = tamanho_grafico
         altura = tamanho_grafico * 0.6  # Ajustando a altura para ser proporcional à largura
+          
+        # Função para formatar o eixo y como moeda brasileira
+        def formatar_moeda(valor, pos):
+            return f'R${valor:,.2f}'.replace(',', 'X').replace('.', ',').replace('X', '.')
+
+        # Função para formatar quantidade sem casas decimais
+        def formatar_quantidade(valor, pos):
+            return f'{int(valor):,}'.replace(',', '.')
         
         
-       # Gráfico de Barras
-        if grafico_selecionado == "Gráfico de Barras":
+        # Gráfico de Barras 1
+        if grafico_selecionado == "Gráfico de Barras 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Barras:")
+            st.write("### Gráfico de Barras 1:")
             
+            # Criando a figura e o eixo
+            figura, ax = plt.subplots(figsize=(10, 6))
+            
+            # Verificar se o eixo y contém valores numéricos
+            if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+            else:
+                # Criando o gráfico de barras horizontal
+                sns.barplot(y=dados[eixo_x], x=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None, orient='h')
+                
+                # Adiciona legendas ao final das barras
+                for p in ax.patches:
+                    valor_x = p.get_width()
+
+                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.annotate(formatar_moeda(valor_x, None),  # Formatação de moeda
+                                    (valor_x, p.get_y() + p.get_height() / 2), 
+                                    ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
+                    else:
+                        ax.annotate(formatar_quantidade(valor_x, None),  # Formatação de quantidade
+                                    (valor_x, p.get_y() + p.get_height() / 2), 
+                                    ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
+
+                # Ajustar limite do eixo x para evitar que valores transponham a grade de fundo
+                ax.set_xlim(0, ax.get_xlim()[1] * 1.1)  # Aumenta o limite superior em 10%
+
+                # Formata eixo x como moeda ou quantidade
+                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                    ax.xaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                else:
+                    ax.xaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                # Ajustando título e rótulos
+                ax.set_title(f'Gráfico de Barras: {eixo_y} por {eixo_x}', fontsize=16)
+                ax.set_xlabel(eixo_y, fontsize=14)
+                ax.set_ylabel("")  # Oculta o rótulo do eixo Y
+
+                # Melhorando a visualização
+                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
+                plt.tight_layout()
+                # Ocultando todos os rótulos do eixo X
+                ax.set_xticklabels([])
+            
+
+                # Exibindo o gráfico no Streamlit
+                st.pyplot(figura)
+
+
+        
+        # Verifica se o gráfico selecionado é "Gráfico de Barras 2"
+        
+        if grafico_selecionado == "Gráfico de Barras 2":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
+            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
+            st.write("### Gráfico de Barras 2:")
+
+            # Criando a figura e o eixo
             figura, ax = plt.subplots(figsize=(largura, altura))
-            
-            # Criando o gráfico de barras
-            sns.barplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8)
+
+            # Verificar se o eixo y contém valores numéricos
+            if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+            else:
+                # Criando o gráfico de barras sem a barra de erro (ci=None remove o erro padrão)
+                sns.barplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None)
+
+                # Adiciona legendas acima das barras
+                for p in ax.patches:
+                    valor_y = p.get_height()
+
+                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.annotate(formatar_moeda(valor_y, None),  # Formatação de moeda
+                                    (p.get_x() + p.get_width() / 2., valor_y), 
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)  # Rotação dos valores
+                    else:
+                        ax.annotate(formatar_quantidade(valor_y, None),  # Formatação de quantidade sem casas decimais
+                                    (p.get_x() + p.get_width() / 2., valor_y), 
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)  # Rotação dos valores
+
+                # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+                ax.set_ylim(0, ax.get_ylim()[1] * 1.3)  # Aumenta o limite superior em 10%
+
+                # Formata eixo y como moeda ou quantidade
+                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                else:
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                # Ajustando título e rótulos
+                ax.set_title(f'Gráfico de Barras: {eixo_y} por {eixo_x}', fontsize=16)
+                ax.set_xlabel(eixo_x, fontsize=14)
+                ax.set_ylabel(eixo_y, fontsize=14)
+
+                # Melhorando a visualização
+                plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
+                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
+                plt.tight_layout()
+
+                # Ocultando rótulos "0" ou "R$0,00"
+                labels = [item.get_text() for item in ax.get_xticklabels()]
+                labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
+                ax.set_xticklabels(labels)
+
+                # Exibindo o gráfico no Streamlit
+                st.pyplot(figura)
+
+
+        # Repetir a mesma lógica para Gráfico de Barras 3
+        if grafico_selecionado == "Gráfico de Barras 3":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)  # Coluna para o eixo x (ex: Mês)
+            eixo_valor = st.sidebar.selectbox("Selecione o eixo y (Valores)", dados.columns)  # Coluna para os valores
+            eixo_produto = st.sidebar.selectbox("Selecione o eixo z (Produtos)", dados.columns)  # Coluna para produtos
+            st.write("### Gráfico de Barras 3:")
+
+            figura, ax = plt.subplots(figsize=(largura, altura))
+
+            # Criando o gráfico de barras com hue para os produtos
+            sns.barplot(x=eixo_x, y=eixo_valor, hue=eixo_produto, data=dados, ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None)
 
             # Adiciona legendas acima das barras
             for p in ax.patches:
-                ax.annotate(f'{p.get_height():.2f}', 
-                            (p.get_x() + p.get_width() / 2., p.get_height()), 
-                            ha='center', va='bottom', fontsize=10, color='black')
+                valor_y = p.get_height()
+
+                # Verifica se o valor_y é zero antes de adicionar a anotação
+                if valor_y > 0:  # Verifica se o valor é maior que 0
+                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                        ax.annotate(formatar_moeda(valor_y, None),
+                                    (p.get_x() + p.get_width() / 2., valor_y), 
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)
+                    else:
+                        ax.annotate(formatar_quantidade(valor_y, None),
+                                    (p.get_x() + p.get_width() / 2., valor_y), 
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)
+
+            # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+            ax.set_ylim(0, ax.get_ylim()[1] * 1.3)  # Aumenta o limite superior em 30%
+
+            # Formata eixo y como moeda ou quantidade
+            if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+            else:
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
 
             # Ajustando título e rótulos
-            ax.set_title(f'Gráfico de Barras: {eixo_y} por {eixo_x}', fontsize=16)
+            ax.set_title(f'Gráfico de Barras: {eixo_valor} por {eixo_x}', fontsize=16)
             ax.set_xlabel(eixo_x, fontsize=14)
-            ax.set_ylabel(eixo_y, fontsize=14)
+            ax.set_ylabel(eixo_valor, fontsize=14)
 
             # Melhorando a visualização
-            plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
+            plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
             ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
 
             st.pyplot(figura)
 
-  
+
+                
 
         # Gráfico de Dispersão
         elif grafico_selecionado == "Gráfico de Dispersão":
@@ -290,32 +457,80 @@ def principal():
 
             st.pyplot(figura)
 
+     
 
 
-
-      # Gráfico de Linhas
-        elif grafico_selecionado == "Gráfico de Linhas":
+        # Gráfico de Linhas 1
+        elif grafico_selecionado == "Gráfico de Linhas 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Linhas:")
-            
+            st.write("### Gráfico de Linhas 1:")
+
             figura, ax = plt.subplots(figsize=(largura, altura))
-            sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
             
+            # Criando o gráfico de linhas
+            sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
+
+            # Ajustando título e rótulos
             ax.set_title(f'Gráfico de Linhas: {eixo_y} ao longo de {eixo_x}', fontsize=16)
             ax.set_xlabel(eixo_x, fontsize=14)
             ax.set_ylabel(eixo_y, fontsize=14)
 
+            # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+            if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+            else:
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+            # Ajustando os limites do eixo y
+            ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
+            
             # Verificar se o eixo y contém valores numéricos
             if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' contém valores não numéricos. Os rótulos não serão exibidos.")
+                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
             else:
                 # Adicionando os valores dos pontos como rótulos
                 for x, y in zip(dados[eixo_x], dados[eixo_y]):
-                    ax.text(x, y, str(y), fontsize=10, ha='center', va='bottom')  # Convertendo y para string sem tentar converter
+                    # Verifica se é para formatar como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.text(x, y, formatar_moeda(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como moeda
+                    else:
+                        ax.text(x, y, formatar_quantidade(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como quantidade
 
             st.pyplot(figura)
 
+ 
+       # Gráfico de Linhas 2
+        elif grafico_selecionado == "Gráfico de Linhas 2":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
+            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
+            st.write("### Gráfico de Linhas 2:")
+
+            # Verificar se o eixo y contém valores numéricos
+            if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. O gráfico não será exibido.")
+            else:
+                figura, ax = plt.subplots(figsize=(largura, altura))
+                
+                # Criando o gráfico de linhas
+                sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
+
+                # Ajustando título e rótulos
+                ax.set_title(f'Gráfico de Linhas: {eixo_y} ao longo de {eixo_x}', fontsize=16)
+                ax.set_xlabel(eixo_x, fontsize=14)
+                ax.set_ylabel(eixo_y, fontsize=14)
+
+                # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                else:
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                # Ajustando os limites do eixo y
+                ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
+
+                # Exibir o gráfico
+                st.pyplot(figura)
 
         # Gráfico de Violino
         elif grafico_selecionado == "Gráfico de Violino":
