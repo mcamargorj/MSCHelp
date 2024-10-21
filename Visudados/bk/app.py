@@ -19,7 +19,7 @@ st.set_page_config(
 
 def mostrar_logo():
     logo = Image.open('logo1.png').convert("RGBA")
-    logo = logo.resize((500, 500))  # Redimensiona a imagem para 200x200 pixels
+    logo = logo.resize((200, 200))  # Redimensiona a imagem para 200x200 pixels
     st.sidebar.image(logo, use_column_width=True)
 
 # Função para localizar colunas que contêm variações de "data" e aplicar formatação
@@ -162,7 +162,7 @@ def principal():
         # Seção de visualizações
         st.sidebar.header("Visualizações")
         opcoes_graficos = [
-            "Gráfico de Barras 1","Gráfico de Barras 2", "Gráfico de Barras 3", "Gráfico de Pizza", "Gráfico de Linhas 1","Gráfico de Linhas 2","Gráfico de Linhas 3", 
+            "Gráfico de Barras 1","Gráfico de Barras 2", "Gráfico de Barras 3", "Gráfico de Pizza", "Gráfico de Linhas 1","Gráfico de Linhas 2", 
             "Gráfico de Dispersão", "Histograma", 
             "Box Plot", "Gráfico de Violino", "Gráfico de Área"
         ]
@@ -226,7 +226,7 @@ def principal():
                                     ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
 
                 # Ajustar limite do eixo x para evitar que valores transponham a grade de fundo
-                ax.set_xlim(0, ax.get_xlim()[1] * 1.5)  # Aumenta o limite superior em 10%
+                ax.set_xlim(0, ax.get_xlim()[1] * 1.1)  # Aumenta o limite superior em 10%
 
                 # Formata eixo x como moeda ou quantidade
                 if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
@@ -285,7 +285,7 @@ def principal():
                                     ha='center', va='bottom', fontsize=10, color='black', rotation=75)  # Rotação dos valores
 
                 # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-                ax.set_ylim(0, ax.get_ylim()[1] * 1.5)  # Aumenta o limite superior em 10%
+                ax.set_ylim(0, ax.get_ylim()[1] * 1.3)  # Aumenta o limite superior em 10%
 
                 # Formata eixo y como moeda ou quantidade
                 if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
@@ -336,14 +336,14 @@ def principal():
                     if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
                         ax.annotate(formatar_moeda(valor_y, None),
                                     (p.get_x() + p.get_width() / 2., valor_y), 
-                                    ha='center', va='bottom', fontsize=10, color='black', rotation=90)
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)
                     else:
                         ax.annotate(formatar_quantidade(valor_y, None),
                                     (p.get_x() + p.get_width() / 2., valor_y), 
-                                    ha='center', va='bottom', fontsize=10, color='black', rotation=90)
+                                    ha='center', va='bottom', fontsize=10, color='black', rotation=75)
 
             # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-            ax.set_ylim(0, ax.get_ylim()[1] * 1.5)  # Aumenta o limite superior em 30%
+            ax.set_ylim(0, ax.get_ylim()[1] * 1.3)  # Aumenta o limite superior em 30%
 
             # Formata eixo y como moeda ou quantidade
             if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
@@ -456,40 +456,51 @@ def principal():
             plt.xticks(rotation=45)
 
             st.pyplot(figura)
- 
-       # Gráfico de Linhas 1
+
+     
+
+
+        # Gráfico de Linhas 1
         elif grafico_selecionado == "Gráfico de Linhas 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
             st.write("### Gráfico de Linhas 1:")
 
+            figura, ax = plt.subplots(figsize=(largura, altura))
+            
+            # Criando o gráfico de linhas
+            sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
+
+            # Ajustando título e rótulos
+            ax.set_title(f'Gráfico de Linhas: {eixo_y} ao longo de {eixo_x}', fontsize=16)
+            ax.set_xlabel(eixo_x, fontsize=14)
+            ax.set_ylabel(eixo_y, fontsize=14)
+
+            # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+            if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+            else:
+                ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+            # Ajustando os limites do eixo y
+            ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
+            
             # Verificar se o eixo y contém valores numéricos
             if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. O gráfico não será exibido.")
+                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
             else:
-                figura, ax = plt.subplots(figsize=(largura, altura))
-                
-                # Criando o gráfico de linhas
-                sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
+                # Adicionando os valores dos pontos como rótulos
+                for x, y in zip(dados[eixo_x], dados[eixo_y]):
+                    # Verifica se é para formatar como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.text(x, y, formatar_moeda(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como moeda
+                    else:
+                        ax.text(x, y, formatar_quantidade(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como quantidade
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Linhas: {eixo_y} ao longo de {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_y, fontsize=14)
+            st.pyplot(figura)
 
-                # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
-                else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
-
-                # Ajustando os limites do eixo y
-                ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
-
-                # Exibir o gráfico
-                st.pyplot(figura)
-
-        # Gráfico de Linhas 2
+ 
+       # Gráfico de Linhas 2
         elif grafico_selecionado == "Gráfico de Linhas 2":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
@@ -514,51 +525,7 @@ def principal():
                     ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
                 else:
                     ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
-                # Adicionando os valores dos pontos como rótulos
-                for x, y in zip(dados[eixo_x], dados[eixo_y]):
-                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                        ax.text(x, y, formatar_moeda(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como moeda
-                    else:
-                        ax.text(x, y, formatar_quantidade(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como quantidade
-            
-                # Ajustando os limites do eixo y
-                ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
 
-                # Exibir o gráfico
-                st.pyplot(figura)
-        # Gráfico de Linhas 3
-        elif grafico_selecionado == "Gráfico de Linhas 3":
-            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
-            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Linhas 3:")
-
-            # Verificar se o eixo y contém valores numéricos
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. O gráfico não será exibido.")
-            else:
-                figura, ax = plt.subplots(figsize=(largura, altura))
-                
-                # Criando o gráfico de linhas
-                sns.lineplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, marker="o", palette=paletas[paleta_escolhida])  # 'marker="o"' para exibir os pontos
-
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Linhas: {eixo_y} ao longo de {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_y, fontsize=14)
-
-                # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
-                else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
-                
-                # Adicionando os valores dos pontos como rótulos
-                for x, y in zip(dados[eixo_x], dados[eixo_y]):
-                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                        ax.text(x, y, formatar_moeda(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como moeda
-                    else:
-                        ax.text(x, y, formatar_quantidade(y, None), fontsize=10, ha='center', va='bottom')  # Formatação como quantidade
-                
                 # Ajustando os limites do eixo y
                 ax.set_ylim(dados[eixo_y].min() * 0.95, dados[eixo_y].max() * 1.05)  # Limita o eixo Y para ajustar os valores
 
