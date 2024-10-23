@@ -202,9 +202,14 @@ def principal():
         # Seção de visualizações
         st.sidebar.header("Visualizações")
         opcoes_graficos = [
-            "Gráfico de Barras 1","Gráfico de Barras 2", 
-            "Gráfico de Barras 3", "Gráfico de Pizza", 
-            "Gráfico de Linhas 1","Gráfico de Linhas 2",
+            "Gráfico de Barras 1",
+            "Gráfico de Barras 2", 
+            "Gráfico de Barras 3", 
+            "Gráfico de Barras 4",
+            "Gráfico de Barras 5",
+            "Gráfico de Pizza", 
+            "Gráfico de Linhas 1",
+            "Gráfico de Linhas 2",
             "Gráfico de Linhas 3", 
             
         ]
@@ -241,212 +246,373 @@ def principal():
         if grafico_selecionado == "Gráfico de Barras 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
-            
-            st.write("### Gráfico de Barras 1:")
-
-            # Criando a figura e o eixo
-            figura, ax = plt.subplots(figsize=(10, 6))
-
-            # Verificar se o eixo y contém valores numéricos
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+             # Verifica se as colunas são diferentes
+            if eixo_x == eixo_y:
+                st.error("As colunas selecionadas para os eixos x e y devem ser diferentes.")
             else:
-                # Agregando os dados de acordo com a escolha do usuário
-                if tipo_aggregacao == "Média":
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
-                else:  # Total
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
-
-                # Criando o gráfico de barras horizontal
-                sns.barplot(y=dados_agregados[eixo_x], x=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None, orient='h')
+                tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
                 
-                # Adiciona legendas ao final das barras
-                for p in ax.patches:
-                    valor_x = p.get_width()
+                st.write("### Gráfico de Barras 1:")
 
-                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                        ax.annotate(formatar_moeda(valor_x, None),  # Formatação de moeda
-                                    (valor_x, p.get_y() + p.get_height() / 2), 
-                                    ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
-                    else:
-                        ax.annotate(formatar_quantidade(valor_x, None),  # Formatação de quantidade
-                                    (valor_x, p.get_y() + p.get_height() / 2), 
-                                    ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
+                # Criando a figura e o eixo
+                figura, ax = plt.subplots(figsize=(10, 6))
 
-                # Ajustar limite do eixo x para evitar que valores transponham a grade de fundo
-                ax.set_xlim(0, ax.get_xlim()[1] * 1.5)  # Aumenta o limite superior em 50%
-
-                # Formata eixo x como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.xaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                # Verificar se o eixo y contém valores numéricos
+                if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                    st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
                 else:
-                    ax.xaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+                    # Agregando os dados de acordo com a escolha do usuário
+                    if tipo_aggregacao == "Média":
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
+                    else:  # Total
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Barras: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_y, fontsize=14)
-                ax.set_ylabel("")  # Oculta o rótulo do eixo Y
+                    # Criando o gráfico de barras horizontal
+                    sns.barplot(y=dados_agregados[eixo_x], x=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None, orient='h')
+                    
+                    # Adiciona legendas ao final das barras
+                    for p in ax.patches:
+                        valor_x = p.get_width()
 
-                # Melhorando a visualização
-                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+                        # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                        if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                            ax.annotate(formatar_moeda(valor_x, None),  # Formatação de moeda
+                                        (valor_x, p.get_y() + p.get_height() / 2), 
+                                        ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
+                        else:
+                            ax.annotate(formatar_quantidade(valor_x, None),  # Formatação de quantidade
+                                        (valor_x, p.get_y() + p.get_height() / 2), 
+                                        ha='left', va='center', fontsize=10, color='black', rotation=0)  # Rotação a 0º
 
-                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
-                plt.tight_layout()
-                # Ocultando todos os rótulos do eixo X
-                ax.set_xticklabels([])
+                    # Ajustar limite do eixo x para evitar que valores transponham a grade de fundo
+                    ax.set_xlim(0, ax.get_xlim()[1] * 1.5)  # Aumenta o limite superior em 50%
 
-                # Exibindo o gráfico no Streamlit
-                st.pyplot(figura)
+                    # Formata eixo x como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.xaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.xaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Barras: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_y, fontsize=14)
+                    ax.set_ylabel("")  # Oculta o rótulo do eixo Y
+
+                    # Melhorando a visualização
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                    # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
+                    plt.tight_layout()
+                    # Ocultando todos os rótulos do eixo X
+                    ax.set_xticklabels([])
+
+                    # Exibindo o gráfico no Streamlit
+                    st.pyplot(figura)
 
         
-        # Verifica se o gráfico selecionado é "Gráfico de Barras 2"
+  
+
+        #Gráfico de Barras 2
         if grafico_selecionado == "Gráfico de Barras 2":
-            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
-            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
-            
-            st.write("### Gráfico de Barras 2:")
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)  # Coluna para o eixo x (ex: Mês)
+            eixo_valor = st.sidebar.selectbox("Selecione o eixo y (Valores)", dados.columns)  # Coluna para os valores
 
-            # Criando a figura e o eixo
-            figura, ax = plt.subplots(figsize=(largura, altura))
-
-            # Verificar se o eixo y contém valores numéricos
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+            # Verifica se as colunas são diferentes
+            if eixo_x == eixo_valor:
+                st.error("As colunas selecionadas para os eixos x e y devem ser diferentes.")
             else:
-                # Agregando os dados de acordo com a escolha do usuário
-                if tipo_aggregacao == "Média":
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
-                else:  # Total
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
+                # Adiciona opção de agregação
+                tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
+                
+                st.write("### Gráfico de Barras 2:")
+                figura, ax = plt.subplots(figsize=(largura, altura))
 
-                # Criando o gráfico de barras sem a barra de erro (ci=None remove o erro padrão)
-                sns.barplot(x=dados_agregados[eixo_x], y=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], alpha=0.8, ci=None)
-
-                # Adiciona legendas acima das barras
-                for p in ax.patches:
-                    valor_y = p.get_height()
-
-                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                        ax.annotate(formatar_moeda(valor_y, None),  # Formatação de moeda
-                                    (p.get_x() + p.get_width() / 2., valor_y), 
-                                    ha='center', va='bottom', fontsize=10, color='black', rotation=0)  # Rotação dos valores
-                    else:
-                        ax.annotate(formatar_quantidade(valor_y, None),  # Formatação de quantidade sem casas decimais
-                                    (p.get_x() + p.get_width() / 2., valor_y), 
-                                    ha='center', va='bottom', fontsize=10, color='black', rotation=0)  # Rotação dos valores
-
-                # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-                ax.set_ylim(0, ax.get_ylim()[1] * 1.5)  # Aumenta o limite superior em 50%
-
-                # Formata eixo y como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                # Verificar se a coluna selecionada para o eixo Y contém valores numéricos
+                if not pd.api.types.is_numeric_dtype(dados[eixo_valor]):
+                    st.warning(f"A coluna '{eixo_valor}' não contém valores numéricos. O gráfico não pode ser gerado.")
                 else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+                    # Agregar dados com base na opção escolhida
+                    if tipo_aggregacao == "Total":
+                        dados_agrupados = dados.groupby(eixo_x)[eixo_valor].sum().reset_index()
+                    else:  # Média
+                        dados_agrupados = dados.groupby(eixo_x)[eixo_valor].mean().reset_index()
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Barras: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_y, fontsize=14)
+                    # Criando o gráfico de barras com os totais
+                    sns.barplot(x=eixo_x, y=eixo_valor, data=dados_agrupados, ax=ax, 
+                                palette=paletas[paleta_escolhida], alpha=0.8)
 
-                # Melhorando a visualização
-                plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
-                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+                    # Adiciona legendas acima das barras (apenas para o valor total)
+                    for p in ax.patches:
+                        valor_y = p.get_height()
+                        
+                        if valor_y > 0:  # Verifica se o valor é maior que 0
+                            if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                                ax.annotate(formatar_moeda(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='center', va='bottom', fontsize=10, color='black', rotation=90)
+                            else:
+                                ax.annotate(formatar_quantidade(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='center', va='bottom', fontsize=10, color='black', rotation=90)
 
-                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
-                plt.tight_layout()
+                    # Ajustar limite do eixo y
+                    ax.set_ylim(0, ax.get_ylim()[1] * 1.5)
 
-                # Ocultando rótulos "0" ou "R$0,00"
-                labels = [item.get_text() for item in ax.get_xticklabels()]
-                labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
-                ax.set_xticklabels(labels)
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
 
-                # Exibindo o gráfico no Streamlit
-                st.pyplot(figura)
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Barras: {tipo_aggregacao} de {eixo_valor} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_valor, fontsize=14)
 
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
 
-        # Repetir a mesma lógica para Gráfico de Barras 3
+                    st.pyplot(figura)
+
+    
+
+        
+        # Gráfico de Barras 3
         if grafico_selecionado == "Gráfico de Barras 3":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)  # Coluna para o eixo x (ex: Mês)
             eixo_valor = st.sidebar.selectbox("Selecione o eixo y (Valores)", dados.columns)  # Coluna para os valores
             eixo_produto = st.sidebar.selectbox("Selecione o eixo z (Produtos)", dados.columns)  # Coluna para produtos
-            st.write("### Gráfico de Barras 3:")
 
-            # Verificar se a coluna selecionada para o eixo Y contém valores numéricos
-            if not pd.api.types.is_numeric_dtype(dados[eixo_valor]):
-                st.warning(f"A coluna '{eixo_valor}' não contém valores numéricos. O gráfico não pode ser gerado.")
+            # Verifica se as colunas são diferentes
+            if eixo_x == eixo_valor or eixo_x == eixo_produto or eixo_valor == eixo_produto:
+                st.error("As colunas selecionadas para os eixos x, y e z devem ser diferentes.")
             else:
-                figura, ax = plt.subplots(figsize=(largura, altura))
-
-                # Calcular o total de vendas por mês
-                totais_por_mes = dados.groupby(eixo_x)[eixo_valor].sum().reset_index()
-
-                # Criando o gráfico de barras com os totais
-                sns.barplot(x=eixo_x, y=eixo_valor, data=totais_por_mes, ax=ax, palette=paletas[paleta_escolhida], alpha=0.8)
-
-                # Adiciona legendas acima das barras (apenas para o valor total)
-                for p in ax.patches:
-                    valor_y = p.get_height()
-                    
-                    # Verifica se o valor_y é zero antes de adicionar a anotação
-                    if valor_y > 0:  # Verifica se o valor é maior que 0
-                        # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                        if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
-                            # Ajusta o deslocamento do texto para afastá-lo da barra
-                            ax.annotate(formatar_moeda(valor_y, None),
-                                        (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),  # Aumente aqui para afastar o texto
-                                        ha='right', va='bottom', fontsize=10, color='black', rotation=90)
-                        else:
-                            ax.annotate(formatar_quantidade(valor_y, None),
-                                        (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),  # Aumente aqui para afastar o texto
-                                        ha='right', va='bottom', fontsize=10, color='black', rotation=90)
-
-                # Calcular a média de vendas por categoria (mês)
-                medias_por_categoria = dados.groupby(eixo_x)[eixo_valor].mean().reset_index()
-
-                # Adicionar os valores médios apenas nos marcadores da linha média
-                media_y_values = []  # Lista para armazenar os valores médios
-                for i in range(len(medias_por_categoria)):
-                    media_y = medias_por_categoria[eixo_valor].iloc[i]  # Média para a categoria correspondente
-                    media_y_values.append(media_y)  # Armazenar o valor médio
-                    
-                    # Formatar a média de acordo com o tipo de dado
-                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
-                        media_text = formatar_moeda(media_y, None)
-                    else:
-                        media_text = formatar_quantidade(media_y, None)
-
-                # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-                ax.set_ylim(0, ax.get_ylim()[1] * 1.5)  # Aumenta o limite superior em 20%
-
-                # Formata eixo y como moeda ou quantidade
-                if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                # Verificar se a coluna selecionada para o eixo Y contém valores numéricos
+                if not pd.api.types.is_numeric_dtype(dados[eixo_valor]):
+                    st.warning(f"A coluna '{eixo_valor}' do eixo Y não contém valores numéricos. O gráfico não pode ser gerado.")
                 else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+                    # Adiciona opção de agregação
+                    tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
+                    
+                    st.write("### Gráfico de Barras 3:")
+                    figura, ax = plt.subplots(figsize=(largura, altura))
 
-                # Traçar a linha média e adicionar os valores médios próximos aos marcadores
-                ax.plot(medias_por_categoria[eixo_x], media_y_values, color='blue', marker='o', linestyle='-', linewidth=2, label='Média', alpha=0.7)
+                    # Agregar dados com base na opção escolhida
+                    if tipo_aggregacao == "Total":
+                        dados_agrupados = dados.groupby([eixo_x, eixo_produto])[eixo_valor].sum().reset_index()
+                    else:  # Média
+                        dados_agrupados = dados.groupby([eixo_x, eixo_produto])[eixo_valor].mean().reset_index()
 
-                for i, media_y in enumerate(media_y_values):
-                    ax.text(medias_por_categoria[eixo_x].iloc[i], media_y + 0.3 * media_y, f'{media_text}', color='blue', ha='left', fontsize=8, rotation=90, verticalalignment='bottom')               
+                    # Criando o gráfico de barras com hue para os produtos
+                    sns.barplot(x=eixo_x, y=eixo_valor, hue=eixo_produto, data=dados_agrupados, ax=ax, 
+                                palette=paletas[paleta_escolhida], alpha=0.8, errorbar=None)
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Barras: {eixo_valor} por {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_valor, fontsize=14)
+                    # Adiciona legendas acima das barras
+                    for p in ax.patches:
+                        valor_y = p.get_height()
 
-                # Melhorando a visualização
-                plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
-                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
-                ax.legend(loc='upper left')  # Adiciona a legenda apenas uma vez
+                        if valor_y > 0:  # Verifica se o valor é maior que 0
+                            # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                            if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                                ax.annotate(formatar_moeda(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y), 
+                                            ha='center', va='bottom', fontsize=10, color='black', rotation=75)
+                            else:
+                                ax.annotate(formatar_quantidade(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y), 
+                                            ha='center', va='bottom', fontsize=10, color='black', rotation=75)
 
-                # Exibindo o gráfico no Streamlit
-                st.pyplot(figura)
+                    # Ajustar limite do eixo y
+                    ax.set_ylim(0, ax.get_ylim()[1] * 1.3)
+
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Barras: {tipo_aggregacao} de {eixo_valor} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_valor, fontsize=14)
+
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                    st.pyplot(figura)
+
+
+    
+        # Gráfico de Barras 4
+        if grafico_selecionado == "Gráfico de Barras 4":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)  # Coluna para o eixo x (ex: Mês)
+            eixo_valor = st.sidebar.selectbox("Selecione o eixo y (Valores)", dados.columns)  # Coluna para os valores
+
+            # Verificar se o eixo x e o eixo y são a mesma coluna
+            if eixo_x == eixo_valor:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
+            else:
+                st.write("### Gráfico de Barras 4:")
+
+                # Verificar se a coluna selecionada para o eixo Y contém valores numéricos
+                if not pd.api.types.is_numeric_dtype(dados[eixo_valor]):
+                    st.warning(f"A coluna '{eixo_valor}' não contém valores numéricos. O gráfico não pode ser gerado.")
+                else:
+                    figura, ax = plt.subplots(figsize=(largura, altura))
+
+                    # Calcular o total de vendas por categoria
+                    totais_por_categoria = dados.groupby(eixo_x)[eixo_valor].sum().reset_index()
+
+                    # Criando o gráfico de barras com os totais
+                    sns.barplot(x=eixo_x, y=eixo_valor, data=totais_por_categoria, ax=ax, palette=paletas[paleta_escolhida], alpha=0.8)
+
+                    # Adiciona legendas acima das barras (apenas para o valor total)
+                    for p in ax.patches:
+                        valor_y = p.get_height()
+
+                        if valor_y > 0:  # Verifica se o valor é maior que 0
+                            if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                                ax.annotate(formatar_moeda(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='left', va='bottom', fontsize=10, color='black', rotation=90)
+                            else:
+                                ax.annotate(formatar_quantidade(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='left', va='bottom', fontsize=10, color='black', rotation=90)
+
+                    # Calcular a média de vendas por categoria
+                    medias_por_categoria = dados.groupby(eixo_x)[eixo_valor].mean().reset_index()
+
+                    # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+                    ax.set_ylim(0, ax.get_ylim()[1] * 2)
+
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                    # Traçar a linha média e adicionar os valores médios próximos aos marcadores
+                    media_y_values = medias_por_categoria[eixo_valor].tolist()
+                    ax.plot(medias_por_categoria[eixo_x], media_y_values, color='blue', marker='o', linestyle='-', linewidth=2, label='Média', alpha=0.7)
+
+                    for i, media_y in enumerate(media_y_values):
+                        media_text = formatar_moeda(media_y, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(media_y, None)
+                        ax.text(medias_por_categoria[eixo_x].iloc[i], media_y + 0.3 * media_y, media_text, color='blue', ha='right', fontsize=8, rotation=90, verticalalignment='bottom')
+
+                    # Calcular e exibir o total geral
+                    total_geral = totais_por_categoria[eixo_valor].sum()
+                    total_text = formatar_moeda(total_geral, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(total_geral, None)
+
+                    # Calcular a média total
+                    media_total = medias_por_categoria[eixo_valor].mean()
+                    media_total_text = formatar_moeda(media_total, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(media_total, None)
+
+                    # Adicionar o total e a média na legenda, alinhado à direita
+                    ax.legend(loc='upper right', title=f'Total: {total_text}\nMédia: {media_total_text}', fontsize=10)
+
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Barras: {eixo_valor} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_valor, fontsize=14)
+
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                    # Exibindo o gráfico no Streamlit
+                    st.pyplot(figura)
+
+        # Gráfico de Barras 5
+               
+        if grafico_selecionado == "Gráfico de Barras 5":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)  # Coluna para o eixo x (ex: Mês)
+            eixo_valor = st.sidebar.selectbox("Selecione o eixo y (Valores)", dados.columns)  # Coluna para os valores
+            eixo_produto = st.sidebar.selectbox("Selecione o eixo z (Produtos)", dados.columns)  # Coluna para produtos
+
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_valor or eixo_x == eixo_produto or eixo_valor == eixo_produto:
+                st.warning("As colunas selecionadas para os eixos x, y e z devem ser diferentes.")
+            else:
+                st.write("### Gráfico de Barras 5:")
+
+                # Verificar se a coluna selecionada para o eixo Y contém valores numéricos
+                if not pd.api.types.is_numeric_dtype(dados[eixo_valor]):
+                    st.warning(f"A coluna '{eixo_valor}' não contém valores numéricos. O gráfico não pode ser gerado.")
+                else:
+                    figura, ax = plt.subplots(figsize=(largura, altura))
+
+                    # Calcular o total de valores agrupados por eixo_x e eixo_produto
+                    totais_por_categoria = dados.groupby([eixo_x, eixo_produto])[eixo_valor].sum().reset_index()
+
+                    # Criando o gráfico de barras com os totais
+                    sns.barplot(x=eixo_x, y=eixo_valor, hue=eixo_produto, data=totais_por_categoria, ax=ax,
+                                palette=paletas[paleta_escolhida], alpha=0.8)
+
+                    # Adiciona legendas acima das barras (apenas para o valor total)
+                    for p in ax.patches:
+                        valor_y = p.get_height()
+
+                        if valor_y > 0:  # Verifica se o valor é maior que 0
+                            if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                                ax.annotate(formatar_moeda(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='left', va='bottom', fontsize=10, color='black', rotation=90)
+                            else:
+                                ax.annotate(formatar_quantidade(valor_y, None),
+                                            (p.get_x() + p.get_width() / 2., valor_y + 0.1 * valor_y),
+                                            ha='left', va='bottom', fontsize=10, color='black', rotation=90)
+
+                    # Calcular a média de valores por categoria (eixo_x e eixo_produto)
+                    medias_por_categoria = dados.groupby([eixo_x, eixo_produto])[eixo_valor].mean().reset_index()
+
+                    # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+                    ax.set_ylim(0, ax.get_ylim()[1] * 4)
+
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+
+                    # Traçar a linha média e adicionar os valores médios próximos aos marcadores
+                    for produto in medias_por_categoria[eixo_produto].unique():
+                        media_y_values = medias_por_categoria[medias_por_categoria[eixo_produto] == produto][eixo_valor].tolist()
+                        x_values = medias_por_categoria[medias_por_categoria[eixo_produto] == produto][eixo_x].tolist()
+
+                        ax.plot(x_values, media_y_values, marker='o', linestyle='-', linewidth=2, label=f'Média: {produto}', alpha=0.7)
+
+                        for i, media_y in enumerate(media_y_values):
+                            media_text = formatar_moeda(media_y, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(media_y, None)
+                            ax.text(x_values[i], media_y + 0.03 * media_y, media_text, color='blue', ha='right', fontsize=8, rotation=90)
+
+                    # Calcular e exibir o total geral
+                    total_geral = totais_por_categoria[eixo_valor].sum()
+                    total_text = formatar_moeda(total_geral, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(total_geral, None)
+
+                    # Calcular a média total
+                    media_total = medias_por_categoria[eixo_valor].mean()
+                    media_total_text = formatar_moeda(media_total, None) if "R$" in dados[eixo_valor].name or "valor" in eixo_valor.lower() else formatar_quantidade(media_total, None)
+
+                    # Adicionar o total e a média na legenda, alinhado à direita
+                    ax.legend(loc='upper right', title=f'Total: {total_text}\nMédia: {media_total_text}', fontsize=10)
+                    
+                    
+
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Barras: {eixo_valor} por {eixo_x} (dividido por {eixo_produto})', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_valor, fontsize=14)
+
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para 45 graus
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+
+                    # Exibindo o gráfico no Streamlit
+                    st.pyplot(figura)
+
 
 
         # Gráfico de Dispersão
