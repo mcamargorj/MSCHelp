@@ -206,11 +206,15 @@ def principal():
             "Gráfico de Barras 2", 
             "Gráfico de Barras 3", 
             "Gráfico de Barras 4",
-            "Gráfico de Barras 5",
             "Gráfico de Pizza", 
             "Gráfico de Linhas 1",
             "Gráfico de Linhas 2",
-            "Gráfico de Linhas 3", 
+            "Gráfico de Dispersão", 
+            "Histograma", 
+            "Box Plot", 
+            "Gráfico de Violino", 
+            "Gráfico de Área"
+             
             
         ]
         grafico_selecionado = st.sidebar.selectbox("Escolha um tipo de gráfico", opcoes_graficos)
@@ -242,7 +246,7 @@ def principal():
             return f'{int(valor):,}'.replace(',', '.')
         
         
-                # Gráfico de Barras 1
+        # Gráfico de Barras 1
         if grafico_selecionado == "Gráfico de Barras 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
@@ -615,162 +619,74 @@ def principal():
 
 
 
-        # Gráfico de Dispersão
-        elif grafico_selecionado == "Gráfico de Dispersão":
-            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
-            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Dispersão:")
-            
-            figura, ax = plt.subplots(figsize=(largura, altura))
-
-            # Adicionando o gráfico de dispersão
-            sns.scatterplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax,
-                            hue=dados[eixo_y].astype(str),  # Converte o eixo Y para string para colorir
-                            size=dados[eixo_y],  # Ajusta o tamanho dos pontos baseado no eixo Y
-                            sizes=(20, 200),  # Define os tamanhos mínimo e máximo dos pontos
-                            palette=paletas[paleta_escolhida],  # Usa a paleta de cores selecionada
-                            alpha=0.7,  # Define a transparência dos pontos
-                            edgecolor='w',  # Define a cor da borda dos pontos
-                            linewidth=0.5)  # Define a largura da borda dos pontos
-
-            # Ajustando títulos e rótulos
-            ax.set_title(f'Gráfico de Dispersão: {eixo_x} vs {eixo_y}', fontsize=16)
-            ax.set_xlabel(eixo_x, fontsize=14)
-            ax.set_ylabel(eixo_y, fontsize=14)
-
-            # Melhorando a visualização
-            ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
-            plt.xticks(rotation=45)  # Girando os rótulos do eixo x para melhor legibilidade
-
-            st.pyplot(figura)
-
-
-      # Histograma
-        elif grafico_selecionado == "Histograma":
-            # Filtrando as colunas numéricas
-            colunas_numericas = dados.select_dtypes(include='number').columns
-            
-            coluna = st.sidebar.selectbox("Selecione a coluna numérica", colunas_numericas)
-            
-            # Permitir que o usuário escolha o número de bins
-            num_bins = st.sidebar.slider("Número de Bins", min_value=5, max_value=100, value=30)
-            
-            st.write("### Histograma:")
-            figura, ax = plt.subplots(figsize=(largura, altura))
-            
-            # Adicionando o histograma com KDE
-            sns.histplot(dados[coluna], bins=num_bins, kde=True, ax=ax, palette=paletas[paleta_escolhida],
-                        edgecolor='black', alpha=0.6)  # Adiciona contorno preto às barras
-
-            # Estilizando título e rótulos
-            ax.set_title(f'Histograma de {coluna}', fontsize=18, fontweight='bold')
-            ax.set_xlabel(coluna, fontsize=14, fontweight='bold')
-            ax.set_ylabel('Frequência', fontsize=14, fontweight='bold')
-
-            # Adicionando a média e a mediana
-            media = dados[coluna].mean()
-            mediana = dados[coluna].median()
-            ax.axvline(media, color='red', linestyle='dashed', linewidth=1.5, label='Média')
-            ax.axvline(mediana, color='blue', linestyle='dashed', linewidth=1.5, label='Mediana')
-            
-            ax.legend()  # Adiciona a legenda
-
-            # Melhorando a visualização
-            ax.grid(True, linestyle='--', alpha=0.5)  # Adiciona uma grade com estilo
-            plt.xticks(rotation=45)  # Girar os rótulos do eixo X para melhor legibilidade
-
-            st.pyplot(figura)
-
-
-
-        # Box Plot
-        elif grafico_selecionado == "Box Plot":
-            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
-            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Box Plot:")
-
-            figura, ax = plt.subplots(figsize=(largura, altura))
-
-            # Box plot com paleta de cores personalizada
-            sns.boxplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
-
-            # Configurações visuais adicionais
-            ax.set_title(f'Box Plot de {eixo_y} por {eixo_x}', fontsize=16, weight='bold')
-            ax.set_xlabel(eixo_x, fontsize=14)
-            ax.set_ylabel(eixo_y, fontsize=14)
-
-            # Adicionando grid para facilitar a leitura
-            ax.grid(True, linestyle='--', alpha=0.6)
-
-            # Girar rótulos no eixo x se necessário para melhor visualização
-            plt.xticks(rotation=45)
-
-            st.pyplot(figura)
- 
+        
         # Gráfico de Linhas 1
-       # Verifica se o gráfico selecionado é "Gráfico de Linhas 2"
         elif grafico_selecionado == "Gráfico de Linhas 1":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
             tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
-            
+
             st.write("### Gráfico de Linhas 1:")
 
             # Criando a figura e o eixo
             figura, ax = plt.subplots(figsize=(largura, altura))
 
-            # Verificar se o eixo y contém valores numéricos
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_y:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
             else:
-                # Agregando os dados de acordo com a escolha do usuário
-                if tipo_aggregacao == "Média":
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
-                    valor_resumo = dados_agregados[eixo_y].mean()  # Calcula a média total
-                    valor_label = f"Média: {formatar_moeda(valor_resumo, None)}"
-                else:  # Total
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
-                    valor_resumo = dados_agregados[eixo_y].sum()  # Calcula o total
-                    valor_label = f"Total: {formatar_moeda(valor_resumo, None)}"
-
-                # Criando o gráfico de linhas
-                sns.lineplot(x=dados_agregados[eixo_x], y=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], marker='o', label=valor_label)
-
-                # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-                ax.set_ylim(0, ax.get_ylim()[1] * 1.1)  # Aumenta o limite superior em 10%
-
-                # Formata eixo y como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                # Verificar se o eixo y contém valores numéricos
+                if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                    st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
                 else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+                    # Agregando os dados de acordo com a escolha do usuário
+                    if tipo_aggregacao == "Média":
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
+                        valor_resumo = dados_agregados[eixo_y].mean()  # Calcula a média total
+                        valor_label = f"Média: {formatar_moeda(valor_resumo, None)}"
+                    else:  # Total
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
+                        valor_resumo = dados_agregados[eixo_y].sum()  # Calcula o total
+                        valor_label = f"Total: {formatar_moeda(valor_resumo, None)}"
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Linhas: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_y, fontsize=14)
+                    # Criando o gráfico de linhas
+                    sns.lineplot(x=dados_agregados[eixo_x], y=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], marker='o', label=valor_label)
 
-                # Melhorando a visualização
-                plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
-                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+                    # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+                    ax.set_ylim(0, ax.get_ylim()[1] * 1.1)  # Aumenta o limite superior em 10%
 
-                # Adiciona a legenda
-                ax.legend()
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
 
-                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
-                plt.tight_layout()
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Linhas: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_y, fontsize=14)
 
-                # Ocultando rótulos "0" ou "R$0,00"
-                labels = [item.get_text() for item in ax.get_xticklabels()]
-                labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
-                ax.set_xticklabels(labels)
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
 
-                # Exibindo o gráfico no Streamlit
-                st.pyplot(figura)
+                    # Adiciona a legenda
+                    ax.legend()
+
+                    # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
+                    plt.tight_layout()
+
+                    # Ocultando rótulos "0" ou "R$0,00"
+                    labels = [item.get_text() for item in ax.get_xticklabels()]
+                    labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
+                    ax.set_xticklabels(labels)
+
+                    # Exibindo o gráfico no Streamlit
+                    st.pyplot(figura)
 
 
-       # Verifica se o gráfico selecionado é "Gráfico de Linhas"
-        elif grafico_selecionado == "Gráfico de Linhas 2":
+       # Gráfico de Linhas 2 - Desativado
+        elif grafico_selecionado == "Gráfico de Linhas 22":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
             tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
@@ -834,101 +750,81 @@ def principal():
                 # Exibindo o gráfico no Streamlit
                 st.pyplot(figura)
 
-        # Verifica se o gráfico selecionado é "Gráfico de Linhas"
-        elif grafico_selecionado == "Gráfico de Linhas 3":
+        # "Gráfico de Linhas 2" - Ativado
+        elif grafico_selecionado == "Gráfico de Linhas 2":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
             tipo_aggregacao = st.sidebar.selectbox("Selecione o tipo de agregação", ["Total", "Média"])
-            
-            st.write("### Gráfico de Linhas 3:")
+
+            st.write("### Gráfico de Linhas 2:")
 
             # Criando a figura e o eixo
             figura, ax = plt.subplots(figsize=(largura, altura))
 
-            # Verificar se o eixo y contém valores numéricos
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_y:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
             else:
-                # Agregando os dados de acordo com a escolha do usuário
-                if tipo_aggregacao == "Média":
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
-                    valor_resumo = dados_agregados[eixo_y].mean()  # Calcula a média total
-                    valor_label = f"Média: {formatar_moeda(valor_resumo, None)}"
-                else:  # Total
-                    dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
-                    valor_resumo = dados_agregados[eixo_y].sum()  # Calcula o total
-                    valor_label = f"Total: {formatar_moeda(valor_resumo, None)}"
-
-                # Criando o gráfico de linhas
-                sns.lineplot(x=dados_agregados[eixo_x], y=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], marker='o', label=valor_label)
-
-                # Adiciona legendas nos pontos da linha
-                for x, y in zip(dados_agregados[eixo_x], dados_agregados[eixo_y]):
-                    # Verifica se o eixo y deve ser formatado como moeda ou quantidade
-                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                        ax.annotate(formatar_moeda(y, None),  # Formatação de moeda
-                                    (x, y), 
-                                    ha='center', va='bottom', fontsize=10, color='black')  # Rótulos acima dos pontos
-                    else:
-                        ax.annotate(formatar_quantidade(y, None),  # Formatação de quantidade
-                                    (x, y), 
-                                    ha='center', va='bottom', fontsize=10, color='black')  # Rótulos acima dos pontos
-
-                # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
-                ax.set_ylim(0, ax.get_ylim()[1] * 1.1)  # Aumenta o limite superior em 10%
-
-                # Formata eixo y como moeda ou quantidade
-                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                # Verificar se o eixo y contém valores numéricos
+                if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                    st.warning(f"A coluna '{eixo_y}' do eixo Y contém valores não numéricos. Os rótulos não serão exibidos.")
                 else:
-                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
+                    # Agregando os dados de acordo com a escolha do usuário
+                    if tipo_aggregacao == "Média":
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].mean().reset_index()
+                        valor_resumo = dados_agregados[eixo_y].mean()  # Calcula a média total
+                        valor_label = f"Média: {formatar_moeda(valor_resumo, None)}"
+                    else:  # Total
+                        dados_agregados = dados.groupby(eixo_x)[eixo_y].sum().reset_index()
+                        valor_resumo = dados_agregados[eixo_y].sum()  # Calcula o total
+                        valor_label = f"Total: {formatar_moeda(valor_resumo, None)}"
 
-                # Ajustando título e rótulos
-                ax.set_title(f'Gráfico de Linhas: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
-                ax.set_xlabel(eixo_x, fontsize=14)
-                ax.set_ylabel(eixo_y, fontsize=14)
+                    # Criando o gráfico de linhas
+                    sns.lineplot(x=dados_agregados[eixo_x], y=dados_agregados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], marker='o', label=valor_label)
 
-                # Melhorando a visualização
-                plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
-                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+                    # Adiciona legendas nos pontos da linha
+                    for x, y in zip(dados_agregados[eixo_x], dados_agregados[eixo_y]):
+                        # Verifica se o eixo y deve ser formatado como moeda ou quantidade
+                        if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                            ax.annotate(formatar_moeda(y, None),  # Formatação de moeda
+                                        (x, y), 
+                                        ha='center', va='bottom', fontsize=10, color='black')  # Rótulos acima dos pontos
+                        else:
+                            ax.annotate(formatar_quantidade(y, None),  # Formatação de quantidade
+                                        (x, y), 
+                                        ha='center', va='bottom', fontsize=10, color='black')  # Rótulos acima dos pontos
 
-                # Adiciona a legenda
-                ax.legend()
+                    # Ajustar limite do eixo y para evitar que valores transponham a grade de fundo
+                    ax.set_ylim(0, ax.get_ylim()[1] * 1.1)  # Aumenta o limite superior em 10%
 
-                # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
-                plt.tight_layout()
+                    # Formata eixo y como moeda ou quantidade
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+                    else:
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_quantidade))
 
-                # Ocultando rótulos "0" ou "R$0,00"
-                labels = [item.get_text() for item in ax.get_xticklabels()]
-                labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
-                ax.set_xticklabels(labels)
+                    # Ajustando título e rótulos
+                    ax.set_title(f'Gráfico de Linhas: {tipo_aggregacao} de {eixo_y} por {eixo_x}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_y, fontsize=14)
 
-                # Exibindo o gráfico no Streamlit
-                st.pyplot(figura)
+                    # Melhorando a visualização
+                    plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
 
+                    # Adiciona a legenda
+                    ax.legend()
 
+                    # Ajustar automaticamente o layout para evitar que elementos fiquem fora da área visível
+                    plt.tight_layout()
 
-        # Gráfico de Violino
-        elif grafico_selecionado == "Gráfico de Violino":
-            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
-            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Violino:")
-            
-            figura, ax = plt.subplots(figsize=(largura, altura))
+                    # Ocultando rótulos "0" ou "R$0,00"
+                    labels = [item.get_text() for item in ax.get_xticklabels()]
+                    labels = ['' if label in ['0', 'R$0,00'] else label for label in labels]
+                    ax.set_xticklabels(labels)
 
-            # Adicionando o gráfico de violino
-            sns.violinplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], inner='box', linewidth=1.25)
-
-            # Ajustando títulos e rótulos
-            ax.set_title(f'Gráfico de Violino de {eixo_y} por {eixo_x}', fontsize=16)
-            ax.set_xlabel(eixo_x, fontsize=14)
-            ax.set_ylabel(eixo_y, fontsize=14)
-
-            # Melhorando a visualização
-            ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade
-            plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
-
-            st.pyplot(figura)
+                    # Exibindo o gráfico no Streamlit
+                    st.pyplot(figura)
 
         # Gráfico de Pizza
         elif grafico_selecionado == "Gráfico de Pizza":
@@ -936,8 +832,11 @@ def principal():
             coluna_categorica = st.sidebar.selectbox("Selecione a coluna categórica", dados.columns)
 
             # Opção para selecionar uma coluna de valores (opcional)
-            coluna_valores = st.sidebar.selectbox("Selecione a coluna de valores (opcional)", [None] + list(dados.select_dtypes(['float64', 'int64']).columns))
-
+            #coluna_valores = st.sidebar.selectbox("Selecione a coluna de valores (opcional)", [None] + list(dados.select_dtypes(['float64', 'int64']).columns))
+            # Opção para selecionar uma coluna de valores (opcional)
+            coluna_valores = st.sidebar.selectbox("Selecione a coluna de valores (opcional)", 
+                                                    [None] + list(dados.select_dtypes(['float64', 'int64']).columns),
+                                                    format_func=lambda x: x if x is not None else "Nenhuma")
             st.write("### Gráfico de Pizza:")
 
             figura, ax = plt.subplots(figsize=(largura, altura))
@@ -994,36 +893,208 @@ def principal():
 
             st.pyplot(figura)
 
+        # Gráfico de Violino
+        elif grafico_selecionado == "Gráfico de Violino":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
+            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
+            st.write("### Gráfico de Violino:")
+
+            figura, ax = plt.subplots(figsize=(largura, altura))
+
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_y:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
+            else:
+                # Adicionando o gráfico de violino
+                sns.violinplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida], inner='box', linewidth=1.25)
+
+                # Ajustando títulos e rótulos
+                ax.set_title(f'Gráfico de Violino de {eixo_y} por {eixo_x}', fontsize=16)
+                ax.set_xlabel(eixo_x, fontsize=14)
+                ax.set_ylabel(eixo_y, fontsize=14)
+
+                # Formata eixo y como moeda, se aplicável
+                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+                # Melhorando a visualização
+                ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade
+                plt.xticks(rotation=45)  # Girando rótulos do eixo x para melhor leitura
+
+                st.pyplot(figura)
+
+            # Gráfico de Dispersão
+        elif grafico_selecionado == "Gráfico de Dispersão":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
+            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
+            st.write("### Gráfico de Dispersão:")
+            
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_y:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
+            else:
+                # Verificar se o eixo Y contém valores numéricos
+                if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                    st.warning(f"A coluna '{eixo_y}' do eixo Y deve conter valores numéricos.")
+                else:
+                    figura, ax = plt.subplots(figsize=(largura, altura))
+
+                    # Adicionando o gráfico de dispersão
+                    sns.scatterplot(
+                        x=dados[eixo_x], 
+                        y=dados[eixo_y], 
+                        ax=ax,
+                        hue=dados[eixo_y].astype(str),  # Converte o eixo Y para string para colorir
+                        size=dados[eixo_y],  # Ajusta o tamanho dos pontos baseado no eixo Y
+                        sizes=(20, 200),  # Define os tamanhos mínimo e máximo dos pontos
+                        palette=paletas[paleta_escolhida],  # Usa a paleta de cores selecionada
+                        alpha=0.7,  # Define a transparência dos pontos
+                        edgecolor='w',  # Define a cor da borda dos pontos
+                        linewidth=0.5,  # Define a largura da borda dos pontos
+                        legend=False  # Oculta a legenda interna
+                    )
+
+                    # Ajustando títulos e rótulos
+                    ax.set_title(f'Gráfico de Dispersão: {eixo_x} vs {eixo_y}', fontsize=16)
+                    ax.set_xlabel(eixo_x, fontsize=14)
+                    ax.set_ylabel(eixo_y, fontsize=14)
+
+                    # Formata o eixo Y como moeda, se aplicável
+                    if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                        ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+                    # Formata o eixo X como moeda, se aplicável
+                    if "R$" in dados[eixo_x].name or "valor" in eixo_x.lower():
+                        ax.xaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+                    # Melhorando a visualização
+                    ax.grid(True, linestyle='--', alpha=0.7)  # Adicionando uma grade com estilo
+                    plt.xticks(rotation=45)  # Girando os rótulos do eixo x para melhor legibilidade
+
+                    st.pyplot(figura)
+
+
+            # Histograma
+        elif grafico_selecionado == "Histograma":
+            # Filtrando as colunas numéricas
+            colunas_numericas = dados.select_dtypes(include='number').columns
+            
+            coluna = st.sidebar.selectbox("Selecione a coluna numérica", colunas_numericas)
+            
+            # Permitir que o usuário escolha o número de bins
+            num_bins = st.sidebar.slider("Número de Bins", min_value=5, max_value=100, value=30)
+            
+            st.write("### Histograma:")
+            figura, ax = plt.subplots(figsize=(largura, altura))
+            
+            # Adicionando o histograma com KDE
+            sns.histplot(dados[coluna], bins=num_bins, kde=True, ax=ax, palette=paletas[paleta_escolhida],
+                        edgecolor='black', alpha=0.6)  # Adiciona contorno preto às barras
+
+            # Estilizando título e rótulos
+            ax.set_title(f'Histograma de {coluna}', fontsize=18, fontweight='bold')
+            ax.set_xlabel(coluna, fontsize=14, fontweight='bold')
+            ax.set_ylabel('Frequência', fontsize=14, fontweight='bold')
+
+            # Adicionando a média e a mediana
+            media = dados[coluna].mean()
+            mediana = dados[coluna].median()
+            ax.axvline(media, color='red', linestyle='dashed', linewidth=1.5, label='Média')
+            ax.axvline(mediana, color='blue', linestyle='dashed', linewidth=1.5, label='Mediana')
+            
+            ax.legend()  # Adiciona a legenda
+
+            # Formata eixo x como moeda, se aplicável
+            if "R$" in dados[coluna].name or "valor" in coluna.lower():
+                ax.xaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+            # Melhorando a visualização
+            ax.grid(True, linestyle='--', alpha=0.5)  # Adiciona uma grade com estilo
+            plt.xticks(rotation=45)  # Girar os rótulos do eixo X para melhor legibilidade
+
+            st.pyplot(figura)
 
 
 
- 
+            # Box Plot
+        elif grafico_selecionado == "Box Plot":
+            eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
+            eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
+            st.write("### Box Plot:")
+
+            # Verificar se o eixo y contém valores numéricos
+            if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                st.warning(f"A coluna '{eixo_y}' do eixo Y deve conter valores numéricos.")
+            else:
+                figura, ax = plt.subplots(figsize=(largura, altura))
+
+                # Box plot com paleta de cores personalizada
+                sns.boxplot(x=dados[eixo_x], y=dados[eixo_y], ax=ax, palette=paletas[paleta_escolhida])
+
+                # Configurações visuais adicionais
+                ax.set_title(f'Box Plot de {eixo_y} por {eixo_x}', fontsize=16, weight='bold')
+                ax.set_xlabel(eixo_x, fontsize=14)
+                ax.set_ylabel(eixo_y, fontsize=14)
+
+                # Formata eixo y como moeda, se aplicável
+                if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                    ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+                # Adicionando grid para facilitar a leitura
+                ax.grid(True, linestyle='--', alpha=0.6)
+
+                # Girar rótulos no eixo x se necessário para melhor visualização
+                plt.xticks(rotation=45)
+
+                st.pyplot(figura)
+
+
         # Gráfico de Área
         elif grafico_selecionado == "Gráfico de Área":
             eixo_x = st.sidebar.selectbox("Selecione o eixo x", dados.columns)
             eixo_y = st.sidebar.selectbox("Selecione o eixo y", dados.columns)
-            st.write("### Gráfico de Área:")
-            
+            st.write("### Gráfico de Área")
+
             figura, ax = plt.subplots(figsize=(largura, altura))
 
-            # Verificar se a coluna eixo_y é numérica
-            if dados[eixo_y].dtype not in [np.int64, np.float64]:
-                st.warning(f"A coluna '{eixo_y}' contém valores não numéricos. Não é possível gerar o gráfico de área.")
+            # Verificar se os eixos são diferentes
+            if eixo_x == eixo_y:
+                st.warning("As colunas selecionadas para os eixos x e y devem ser diferentes.")
             else:
-                # Gerar o gráfico de área com estilo
-                dados.plot.area(x=eixo_x, y=eixo_y, ax=ax, alpha=0.7)  # Ajusta a transparência
-                ax.set_facecolor("#f7f7f7")  # Cor de fundo mais suave
-                
-                # Estilizando os rótulos e título
-                ax.set_title(f'Gráfico de Área: {eixo_y} ao longo de {eixo_x}', fontsize=18, fontweight='bold')
-                ax.set_xlabel(eixo_x, fontsize=14, fontweight='bold')
-                ax.set_ylabel(eixo_y, fontsize=14, fontweight='bold')
-                
-                # Melhorar a visualização
-                ax.grid(True, linestyle='--', alpha=0.5)  # Grade com estilo
-                plt.xticks(rotation=45)  # Girar os rótulos do eixo X para melhor legibilidade
+                # Verificar se a coluna eixo_y é numérica
+                if dados[eixo_y].dtype not in [np.int64, np.float64]:
+                    st.warning(f"A coluna '{eixo_y}' contém valores não numéricos. Não é possível gerar o gráfico de área.")
+                else:
+                    # Verificar se a coluna eixo_x é numérica ou categórica
+                    if dados[eixo_x].dtype not in [np.int64, np.float64, 'datetime64[ns]', 'object']:
+                        st.warning(f"A coluna '{eixo_x}' não é suportada. Apenas números, datas e categorias são permitidos.")
+                    else:
+                        # Verificar se há valores nulos
+                        if dados[eixo_x].isnull().any() or dados[eixo_y].isnull().any():
+                            st.warning("Existem valores nulos nas colunas selecionadas. Isso pode afetar a visualização.")
 
-                st.pyplot(figura)
+                        # Gerar o gráfico de área com estilo
+                        dados.plot.area(x=eixo_x, y=eixo_y, ax=ax, alpha=0.7)  # Ajusta a transparência
+                        ax.set_facecolor("#f7f7f7")  # Cor de fundo mais suave
+
+                        # Estilizando os rótulos e título
+                        ax.set_title(f'Gráfico de Área: {eixo_y} ao longo de {eixo_x}', fontsize=18, fontweight='bold')
+                        ax.set_xlabel(eixo_x, fontsize=14, fontweight='bold')
+                        ax.set_ylabel(eixo_y, fontsize=14, fontweight='bold')
+
+                        # Formata eixo y como moeda, se aplicável
+                        if "R$" in dados[eixo_y].name or "valor" in eixo_y.lower():
+                            ax.yaxis.set_major_formatter(FuncFormatter(formatar_moeda))
+
+                        # Melhorar a visualização
+                        ax.grid(True, linestyle='--', alpha=0.5)  # Grade com estilo
+                        plt.xticks(rotation=45)  # Girar os rótulos do eixo X para melhor legibilidade
+
+                        # Ajustar limites do eixo Y para evitar áreas em branco
+                        ax.set_ylim(bottom=0)  # Define o limite inferior como 0
+
+                        st.pyplot(figura)
+
 
 
     else:
