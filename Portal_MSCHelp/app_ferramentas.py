@@ -128,17 +128,17 @@ def listar_usuarios():
     usuarios = cursor.fetchall()
 
     # Mostrar os dados dos usuários
-    print("Dados dos usuários:")
-    for usuario in usuarios:
-        print("Nome:", usuario[1])
-        print("Email:", usuario[2])
-        print("Permissão:", usuario[4])
+    #print("Dados dos usuários:")
+    #or usuario in usuarios:
+        #print("Nome:", usuario[1])
+        #print("Email:", usuario[2])
+        #print("Permissão:", usuario[4])
         # Você pode adicionar mais campos aqui conforme necessário
 
     # Exibir resumo
-    total_usuarios = len(usuarios)
-    data_atual = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    print(f"Resumo: {total_usuarios} usuários cadastrados até a data de hoje {data_atual}")
+    #total_usuarios = len(usuarios)
+    #data_atual = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    #print(f"Resumo: {total_usuarios} usuários cadastrados até a data de hoje {data_atual}")
 
     # Fechar cursor e conexão
     cursor.close()
@@ -147,6 +147,74 @@ def listar_usuarios():
     # Retornar os usuários
     return usuarios
 
+def editar_usuarios(id, nome, email, password, role):
+    conexao = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password=os.environ.get('MYSQL_PASSWORD'),
+        database="MSCHELP"
+    )
+    cursor = conexao.cursor()
+
+    # Buscar o hash atual da senha para comparação
+    cursor.execute("SELECT password FROM usuarios WHERE id = %s", (id,))
+    usuario = cursor.fetchone()
+
+    if not usuario:
+        return False, "Usuário não encontrado."
+    
+    senha_atual = usuario[0]
+
+    # Se uma nova senha foi fornecida, gerar um hash
+    if password and password != senha_atual:
+        password = generate_password_hash(password)
+    else:
+        password = senha_atual  # Mantém o hash atual
+
+    # Atualizar os dados do usuário
+    campos = []
+    valores = []
+
+    if nome:
+        campos.append("nome = %s")
+        valores.append(nome)
+    if email:
+        campos.append("email = %s")
+        valores.append(email)
+    if password != senha_atual:  # Atualiza apenas se a senha mudou
+        campos.append("password = %s")
+        valores.append(password)
+    if role:
+        campos.append("role = %s")
+        valores.append(role)
+
+    # Adiciona o ID no final para a condição WHERE
+    valores.append(id)
+
+    # Monta a consulta dinamicamente
+    sql = f"UPDATE usuarios SET {', '.join(campos)} WHERE id = %s"
+
+    try:
+        cursor.execute(sql, valores)
+        conexao.commit()
+        return True, None
+    except mysql.connector.Error as e:
+        conexao.rollback()
+        return False, str(e)
 
 
+
+def buscar_usuario_por_id(id):
+    conexao = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password=os.environ.get('MYSQL_PASSWORD'),
+        database="MSCHELP"
+    )
+    cursor = conexao.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+    usuario = cursor.fetchone()
+    cursor.close()
+    conexao.close()
+    return usuario
 

@@ -27,13 +27,23 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <p class="text-center mt-3"> Área restrita do site <a href="{{ url_for('painel_admin') }}">Acessar!</a></p>
+                {% if session.get('role') == 'admin' %}
+                <p class="text-center mt-3">Área restrita do site <a href="{{ url_for('painel_admin') }}">Acessar!</a></p>
+                {% endif %}
                 <h2>Bem-vindo, <span id="username">{{nome}}</span>!</h2>
                 <hr>
-                <h4>Aplicativo Integrado <br> Utilize as setas do teclado <br> 
-                    <i class="arrow-icons fas fa-arrow-left"></i> ou 
-                    <i class="arrow-icons fas fa-arrow-right"></i> <br> para controlar o Cubo 
+                <h4 style="text-align: center; font-size: 1.2em; color: #333;">
+                    <strong>Controle o Cubo de Forma Interativa!</strong><br>
+                    Use as setas do teclado para girar o cubo:
+                    <br>
+                    <i class="arrow-icons fas fa-arrow-left" style="font-size: 1.5em; margin: 0 10px;"></i>
+                    <i class="arrow-icons fas fa-arrow-right" style="font-size: 1.5em; margin: 0 10px;"></i>
+                    <br><br>
+                    Ou toque na tela para girá-lo:
+                    <br>
+                    <span style="font-size: 1.1em; color: #777;">Deslize para a esquerda ou direita</span>
                 </h4>
+                
                 <div id="cubo"></div> <!-- Removendo estilos inline -->
                 <!-- Adicionar campo CSRF token -->
                 <form id="csrf_form" method="POST">

@@ -4,22 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Usuários</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/listar.css') }}">
+     <!-- Adicionar link do Font Awesome -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <h1>Lista de Usuários</h1>
-    <table>
+    <table >
         <tr>
             <th>Nome</th>
             <th>E-mail</th>
             <th>Permissão</th>
+            <th>Ação</th> <!-- Coluna para o botão de editar -->
         </tr>
         {% for usuario in usuarios %}
         <tr>
             <td>{{ usuario[1] }}</td>
             <td>{{ usuario[2] }}</td>
             <td>{{ usuario[4] }}</td>
+            <td>
+                <!-- Formulário para editar o usuário -->
+                <form method="GET" action="{{ url_for('editar_usuarios_painel_admin', id=usuario[0]) }}">
+                    <button type="submit" class="btn-editar">
+                        <i class="fas fa-edit"></i> <!-- Ícone de editar -->
+                    </button>
+                </form>
+                
+                <!-- Formulário para remover o usuário -->
+                <form method="POST" action="{{ url_for('remover_usuario_form') }}">
+                    <input type="hidden" name="email" value="{{ usuario[2] }}"> <!-- E-mail do usuário a ser removido -->
+                    <button type="submit" class="btn-remover" onclick="return confirm('Tem certeza que deseja remover este usuário?')">
+                        <i class="fas fa-trash-alt"></i> <!-- Ícone de remover -->
+                    </button>
+                </form>
+            </td>
+            
+            
+            
+            
+            
+            
         </tr>
         {% endfor %}
     </table>
+    
 </body>
 </html>

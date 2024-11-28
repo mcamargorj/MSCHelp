@@ -1,0 +1,234 @@
+/* Reset básico para garantir um visual consistente */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px auto;
+    text-align: center;
+}
+
+li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+/* Estilo comum para todos os botões */
+button {
+    background-color: #4c6baf;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #1f76f8;
+}
+
+/* Estilo comum para os botões com ícones (editar, remover) */
+.buttonbtn {
+    background-color: #4c6baf;
+    border: none;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;  /* Usar inline-flex para alinhar o ícone no centro */
+    justify-content: center; /* Centraliza o ícone dentro do botão */
+    align-items: center;  /* Alinha verticalmente */
+    font-size: 18px; /* Tamanho do ícone */
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;  /* Espaçamento entre os botões */
+    width: 40px; /* Definir uma largura fixa para o botão */
+    height: 40px; /* Definir uma altura fixa para o botão */
+}
+
+/* Efeito ao passar o mouse sobre os botões */
+.buttonbtn:hover {
+    background-color: #365899;  /* Cor mais escura no hover */
+}
+
+/* Estilo específico para o botão de editar */
+.btn-editar {
+    background-color: #4caf50;  /* Cor verde para editar */
+}
+
+.btn-editar:hover {
+    background-color: #45a049;  /* Cor mais escura quando passar o mouse */
+}
+
+/* Estilo específico para o botão de remover */
+.btn-remover {
+    background-color: #f44336;  /* Cor vermelha para remover */
+}
+
+.btn-remover:hover {
+    background-color: #d32f2f;  /* Cor mais escura quando passar o mouse */
+}
+
+/* Estilo para os formulários, alinhando os botões na horizontal */
+form {
+    display: inline-block;  /* Faz os formulários aparecerem em linha */
+    margin-right: 10px;  /* Espaçamento entre os formulários */
+}
+
+/* Ajustando o layout para que os botões fiquem alinhados lado a lado */
+form button {
+    width: auto;  /* Tamanho automático para o botão */
+    height: auto; /* Tamanho automático para o botão */
+}
+
+#conteudo {
+    margin: 20px auto;
+    max-width: 700px; /* Ajuste o tamanho máximo de largura */
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow-x: auto; /* Adiciona barra de rolagem horizontal se necessário */
+}
+
+/* Estilizando a tabela */
+table {
+    width: 100%;
+    border-collapse: separate; /* Usar bordas separadas para permitir o arredondamento */
+    border-spacing: 0; /* Remove o espaço entre as células */
+    border: 1px solid #ddd; /* Borda ao redor da tabela */
+    border-radius: 8px; /* Arredonda as bordas da tabela */
+    overflow: hidden; /* Garante que o arredondamento funcione corretamente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave para a tabela */
+}
+
+/* Estilo geral para th e td */
+th, td {
+    padding: 12px;
+    text-align: left;
+    color: #333;
+    word-wrap: break-word;
+}
+
+/* Cabeçalho da tabela */
+th {
+    background-color: #0834ac;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Linhas do corpo da tabela */
+td {
+    background-color: #f9f9f9;
+}
+
+/* Colunas específicas centralizadas no corpo da tabela */
+td:nth-child(2), /* Coluna E-mail */
+td:nth-child(3), /* Coluna Permissão */
+td:nth-child(4) { /* Coluna Ação */
+    text-align: center;
+}
+
+/* Alternando as cores das linhas */
+tr:nth-child(even) td {
+    background-color: #f1f1f1;
+}
+
+tr:hover td {
+    background-color: #e1e1e1;
+}
+
+/* Estilos das mensagens de alerta */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #aa200d;
+    background-color: #f0e6d8;
+    border-color: #d6e9c6;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 30px;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    #conteudo {
+        max-width: 90%;  /* Ajusta a largura máxima para dispositivos menores */
+        padding: 15px;   /* Diminui o padding */
+    }
+
+    table {
+        font-size: 14px;  /* Ajusta o tamanho da fonte da tabela */
+    }
+
+    button {
+        padding: 8px 16px;  /* Ajusta o padding do botão */
+        font-size: 12px;  /* Ajusta o tamanho da fonte do botão */
+    }
+
+    h1 {
+        font-size: 24px;  /* Ajusta o tamanho da fonte do título */
+    }
+
+    /* Ajusta o layout da tabela para que seja mais acessível em telas menores */
+    table, th, td {
+        font-size: 12px;  /* Reduz o tamanho da fonte na tabela */
+    }
+
+    /* Ajusta os botões dentro dos formulários */
+    form {
+        display: block;  /* Torna os formulários blocos em telas menores */
+        width: 100%;  /* Faz o formulário ocupar a largura total */
+        margin-bottom: 10px;  /* Adiciona um pequeno espaçamento entre os formulários */
+    }
+
+    .buttonbtn {
+        width: 35px;  /* Ajusta o tamanho dos botões com ícones */
+        height: 35px;
+        font-size: 14px;  /* Diminui o tamanho dos ícones */
+    }
+}

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     canvas.appendChild(renderer.domElement);
 
     // Criar materiais transparentes para o cubo
-    const geometry = new THREE.BoxGeometry(4, 4, 4); // Ajuste o tamanho do cubo aqui (aumentado para 3x3x3)
+    const geometry = new THREE.BoxGeometry(4, 4, 4); // Tamanho do cubo
     const material = new THREE.MeshBasicMaterial({ 
         color: 0x00ff00, 
         transparent: true, 
@@ -26,10 +26,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar a textura da imagem
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('/static/images/logo.png', function(texture) {
-        const planeGeometry = new THREE.PlaneGeometry(5, 4); // Ajuste o tamanho da imagem aqui (aumentado para 2.5x2.5)
+        const textureAspect = texture.image.width / texture.image.height;
+
+        // Ajustar a geometria para manter a proporção da imagem
+        const planeGeometry = new THREE.PlaneGeometry(6, 6 / textureAspect); // Ajustando a proporção
         const planeMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+        
+        // Criar um plano e posicioná-lo no centro do cubo
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        scene.add(plane);
+        
+        // Posicionar o plano no centro do cubo (sem ser em uma face)
+        plane.position.set(0, 0, 0);  // Posicionar no centro do cubo
+        cube.add(plane);  // Adicionando o plano como filho do cubo (o plano vai girar junto com o cubo)
     });
 
     camera.position.z = 5.5; // Ajuste a posição da câmera para acomodar o cubo maior
@@ -49,6 +57,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.key === 'ArrowLeft') {
             rotation_direction = -1;  // Girar para a esquerda
         } else if (event.key === 'ArrowRight') {
+            rotation_direction = 1;   // Girar para a direita
+        }
+    });
+
+    // Variáveis para detecção de toque
+    let touchStartX = 0;
+
+    // Evento para iniciar o toque
+    canvas.addEventListener('touchstart', function(event) {
+        touchStartX = event.touches[0].clientX; // Posição inicial do toque
+    });
+
+    // Evento para terminar o toque
+    canvas.addEventListener('touchend', function(event) {
+        const touchEndX = event.changedTouches[0].clientX; // Posição final do toque
+
+        if (touchEndX < touchStartX) {
+            rotation_direction = -1;  // Girar para a esquerda
+        } else if (touchEndX > touchStartX) {
             rotation_direction = 1;   // Girar para a direita
         }
     });

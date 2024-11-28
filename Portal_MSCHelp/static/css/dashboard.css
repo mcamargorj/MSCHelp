@@ -31,6 +31,7 @@ h4 {
     margin-bottom: 20px;
     color: #666; /* Azul da NASA */
 }
+
 /* Estilo personalizado para o texto */
 p {
     text-align: center;
@@ -39,15 +40,87 @@ p {
 }
 
 #cubo {
-    width: 100%; 
-    height: 300px; /* Ajustando a altura do contêiner do cubo */
+    width: 100%; /* Ajuste de largura */
+    height: 400px; /* Ajustando a altura do contêiner do cubo */
     margin-bottom: 20px;
-    border-radius: 20px; /* Arredondando os cantos */
+    border-radius: 20px; /* Arredondando os cantos do contêiner */
+    overflow: hidden; /* Garantir que o conteúdo não ultrapasse as bordas */
+    background-color: black; /* Fundo preto onde o cubo será exibido */
+    
+    /* Garantir que o elemento fique centralizado */
+    margin-left: auto;  /* Centraliza à esquerda */
+    margin-right: auto; /* Centraliza à direita */
 }
+
+
 
 /* Estilo para os ícones */
 .arrow-icons {
     font-size: 24px;
     margin: 0 5px;
     color: #0056b3;
+}
+
+/* Responsividade para telas pequenas */
+@media screen and (max-width: 768px) {
+    .container {
+        max-width: 100%; /* Ajusta o contêiner para ocupar 100% da largura em telas pequenas */
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 24px; /* Reduz o tamanho da fonte para telas pequenas */
+        margin-bottom: 15px;
+    }
+
+    h4 {
+        font-size: 16px; /* Reduz o tamanho da fonte para telas pequenas */
+        margin-bottom: 15px;
+    }
+
+    p {
+        font-size: 14px; /* Reduz o tamanho da fonte para telas pequenas */
+        margin-bottom: 15px;
+    }
+
+    #cubo {
+        height: 300px; /* Ajusta a altura do cubo em telas menores */
+        width: 90%;
+    }
+
+    .arrow-icons {
+        font-size: 20px; /* Reduz o tamanho dos ícones */
+    }
+}
+
+/* Responsividade para telas muito pequenas (como smartphones em modo retrato) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px; /* Reduz o espaçamento interno do corpo */
+    }
+
+    h2 {
+        font-size: 20px; /* Reduz ainda mais o tamanho da fonte do título */
+        margin-bottom: 10px;
+    }
+
+    h4 {
+        font-size: 14px; /* Ajusta o tamanho da fonte do subtítulo */
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 12px; /* Ajusta o tamanho da fonte do parágrafo */
+        margin-bottom: 10px;
+    }
+
+    #cubo {
+        height: 250px; /* Ajusta a altura do cubo para telas muito pequenas */
+        width: 80%;
+        
+    }
+
+    .arrow-icons {
+        font-size: 18px; /* Ajusta o tamanho dos ícones para telas pequenas */
+    }
 }

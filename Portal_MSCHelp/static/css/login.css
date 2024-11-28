@@ -1,3 +1,4 @@
+/* Estilo do corpo */
 body {
     background-color: #f8f9fa;
     font-family: Arial, sans-serif;
@@ -9,6 +10,7 @@ body {
     padding: 20px; /* Adicionando espaçamento interno */
 }
 
+/* Estilo para o contêiner */
 .container {
     max-width: 400px;
     padding: 20px;
@@ -17,12 +19,14 @@ body {
     background-color: #fff;
 }
 
+/* Estilo para o título */
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #0056b3; /* Azul da NASA */
 }
 
+/* Estilo para os campos do formulário */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -34,6 +38,7 @@ label {
     margin-bottom: 5px;
 }
 
+/* Estilo para os campos de input de e-mail e senha */
 input[type="email"],
 input[type="password"] {
     padding: 8px;
@@ -43,6 +48,7 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
+/* Estilo para o botão de envio */
 input[type="submit"] {
     background-color: #0056b3;
     color: #fff;
@@ -58,14 +64,15 @@ input[type="submit"]:hover {
     background-color: #004080;
 }
 
+/* Estilo para as mensagens de alerta */
 .alert {
     padding: 15px;
     margin-bottom: 20px;
     border: 1px solid transparent;
     border-radius: 4px;
     display: flex;
-    align-items: center; /* Centralizar verticalmente */
-    justify-content: center; /* Centralizar horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
 }
 
 .alert-success {
@@ -80,18 +87,80 @@ input[type="submit"]:hover {
     border-color: #d6e9c6;
 }
 
+/* Estilo para centralizar o texto */
 .text-center {
     text-align: center;
 }
+
+/* Estilo para a imagem do logo */
 .container1 {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 10px;
-    
 }
 
 img {
     max-width: 175px;
     height: auto;
     max-height: 175px;
+}
+
+/* Responsividade para telas pequenas (máximo de 768px de largura) */
+@media screen and (max-width: 768px) {
+    /* Ajusta o tamanho do contêiner */
+    .container {
+        max-width: 90%; /* Ocupa 90% da largura da tela em dispositivos pequenos */
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 24px; /* Reduz o tamanho do título */
+    }
+
+    .form-group {
+        margin-bottom: 12px; /* Reduz o espaçamento entre os campos */
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        padding: 10px; /* Aumenta o padding para melhorar a usabilidade */
+    }
+
+    input[type="submit"] {
+        padding: 12px; /* Aumenta o padding do botão */
+    }
+
+    img {
+        max-width: 150px; /* Ajusta o tamanho da imagem */
+    }
+}
+
+/* Responsividade para telas muito pequenas (máximo de 480px de largura) */
+@media screen and (max-width: 480px) {
+    /* Ajusta ainda mais a largura do contêiner */
+    .container {
+        max-width: 95%; /* Ocupa 95% da largura da tela */
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 20px; /* Reduz o tamanho da fonte do título */
+    }
+
+    .form-group {
+        margin-bottom: 10px; /* Reduz ainda mais o espaçamento entre os campos */
+    }
+
+    input[type="email"],
+    input[type="password"] {
+        padding: 12px; /* Aumenta o padding dos inputs */
+    }
+
+    input[type="submit"] {
+        padding: 14px; /* Aumenta o padding do botão */
+    }
+
+    img {
+        max-width: 120px; /* Ajusta o tamanho da imagem ainda mais */
+    }
 }

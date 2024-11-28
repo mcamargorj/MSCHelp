@@ -6,7 +6,7 @@ import os
 
 
 # Importar as funções do kit ferramentas para utilizar no painel_admin
-from app_ferramentas import criar_usuario, remover_usuario, listar_usuarios, email_existe
+from app_ferramentas import criar_usuario, remover_usuario, listar_usuarios, email_existe, editar_usuarios,buscar_usuario_por_id
 
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
@@ -135,6 +135,30 @@ def listar_usuarios_painel_admin():
     else:
         return redirect(url_for('login'))
 
+@app.route('/editar_usuarios/<int:id>', methods=['GET', 'POST'])
+def editar_usuarios_painel_admin(id):
+    if 'user' in session and session.get('role') == 'admin':
+        if request.method == 'GET':
+            usuario = buscar_usuario_por_id(id)  # Buscar dados do usuário específico
+            if usuario:
+                return render_template('editar_usuarios.html', usuario=usuario)
+            else:
+                return redirect(url_for('painel_admin')) # Redirecionar se o usuário não for encontrado
+
+        elif request.method == 'POST':
+            nome = request.form['nome']
+            email = request.form['email']
+            password = request.form['password']
+            role = request.form['role']
+
+            atualizado = editar_usuarios(id, nome, email, password, role)
+
+            if atualizado:
+                return render_template('painel_admin.html', atualizado=True)
+            else:
+                return render_template('editar_usuarios.html', usuario=request.form, atualizado=False, erro="Erro ao atualizar usuário!")
+    else:
+        return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)

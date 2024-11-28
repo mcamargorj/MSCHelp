@@ -1,94 +1,166 @@
+/* Estilo básico do corpo */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+/* Estilo para o título */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
+/* Estilo para a lista não ordenada */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px auto;
+    text-align: center;
+}
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 20px auto;
-            text-align: center;
-        }
+/* Estilo para os itens da lista */
+li {
+    display: inline-block;
+    margin: 0 10px;
+}
 
-        li {
-            display: inline-block;
-            margin: 0 10px;
-        }
+/* Estilo para os botões */
+button {
+    background-color: #4c6baf;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-        button {
-            background-color: #4c6baf;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+button:hover {
+    background-color: #1f76f8;
+}
 
-        button:hover {
-            background-color: #1f76f8;
-        }
+/* Estilo para o conteúdo */
+#conteudo {
+    margin: 20px auto;
+    max-width: 450px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
 
-        #conteudo {
-            margin: 20px auto;
-            max-width: 450px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+/* Estilo para tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+th {
+    background-color: #0834ac;
+    color: white;
+}
 
-        th {
-            background-color: #0834ac;
-            color: white;
-        }
+/* Estilo para alertas */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    display: flex;
+    align-items: center; /* Centralizar verticalmente */
+    justify-content: center; /* Centralizar horizontalmente */
+}
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            display: flex;
-            align-items: center; /* Centralizar verticalmente */
-            justify-content: center; /* Centralizar horizontalmente */
-        }
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
 
-        .alert-success {
-            color: #3c763d;
-            background-color: #dff0d8;
-            border-color: #d6e9c6;
-        }
-        .alert-danger {
-            color: #aa200d;
-            background-color: #f0e6d8;
-            border-color: #d6e9c6;
-        }
-        .text-center {
-             text-align: center;
-        }
+.alert-danger {
+    color: #aa200d;
+    background-color: #f0e6d8;
+    border-color: #d6e9c6;
+}
 
+/* Estilo para o texto centralizado */
+.text-center {
+    text-align: center;
+}
 
-  
+/* Responsividade para telas pequenas (máximo de 768px de largura) */
+@media screen and (max-width: 768px) {
+    /* Ajusta o conteúdo principal */
+    #conteudo {
+        max-width: 90%; /* Ocupa 90% da largura da tela em dispositivos pequenos */
+        padding: 15px;
+    }
+
+    /* Ajusta o título */
+    h1 {
+        font-size: 24px;
+    }
+
+    /* Ajusta os botões */
+    button {
+        padding: 12px 18px; /* Aumenta o padding para maior acessibilidade */
+    }
+
+    /* Ajusta os itens da lista */
+    li {
+        display: block; /* Coloca os itens da lista em bloco para melhor visualização */
+        margin-bottom: 10px;
+    }
+
+    /* Ajusta a largura da tabela */
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px; /* Aumenta o padding para melhorar a legibilidade */
+    }
+}
+
+/* Responsividade para telas muito pequenas (máximo de 480px de largura) */
+@media screen and (max-width: 480px) {
+    /* Ajusta o conteúdo principal */
+    #conteudo {
+        max-width: 95%; /* Ocupa 95% da largura da tela */
+        padding: 10px;
+    }
+
+    /* Ajusta o título */
+    h1 {
+        font-size: 20px; /* Reduz o tamanho do título */
+    }
+
+    /* Ajusta os botões */
+    button {
+        padding: 14px 20px; /* Aumenta o padding do botão */
+        font-size: 14px; /* Diminui o tamanho da fonte do botão */
+    }
+
+    /* Ajusta a tabela */
+    th, td {
+        padding: 12px; /* Aumenta o padding para legibilidade */
+    }
+
+    /* Ajusta os itens da lista */
+    li {
+        display: block;
+        margin-bottom: 12px;
+    }
+}

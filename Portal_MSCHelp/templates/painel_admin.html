@@ -14,7 +14,7 @@
 <body>
     <h1>Painel Administrativo</h1> 
     
-    <!-- condição para interação após criar_usuairio.html-->
+    <!-- Exibe mensagem de sucesso ou erro após ações de criar ou remover usuários -->
     {% if sucesso == True %}
         <div class="alert alert-success text-center" role="alert">
         Usuário criado com sucesso!
@@ -24,7 +24,6 @@
         Erro ao criar usuário: {{ erro }}
         </div>
     {% endif %}
-    <!-- condição para interação após remover_usuairio.html-->
     {% if delete == True %}
         <div class = "alert alert-success text-center" role="alert">
             Usuário removido com sucesso!
@@ -32,21 +31,31 @@
     {% elif delete == False %}
         <div class = "alert alert-danger text-center" role="alert">
             Erro ao remover usuário: {{erro}}
-    {% endif %}
         </div>
-       
-
+    {% endif %}
+    {% if atualizado == True %}
+        <div class="alert alert-success text-center" role="alert">
+        Usuário atualizado com sucesso!
+        </div>
+    {% elif atualizado == False %}
+        <div class="alert alert-danger text-center" role="alert">
+        {{ erro }}
+        </div>
+    {% endif %}
     <ul>
         <li>
             <button onclick="carregarTemplate('/criar_usuario')">Criar Usuário</button>
         </li>
+       
         <li>
-            <button onclick="carregarTemplate('/remover_usuario')">Remover Usuário</button>
+            <button onclick="carregarTemplate('/listar_usuarios')">Exibir Usuários</button>
         </li>
-        <li>
-            <button onclick="carregarTemplate('/listar_usuarios')">Listar Usuários</button>
-        </li>
+      
+        
+     
     </ul>
+<!-- No painel_admin.html, onde você lista os usuários e deseja atualizar -->
+
 
     <!-- Div para exibir o conteúdo dinâmico -->
     <div id="conteudo">
@@ -54,8 +63,5 @@
     </div>
 
     <p class="text-center mt-3"> Retorne para o <a href="{{ url_for('dashboard', nome=session['nome']) }}">Dashboard!</a></p>
-
-
-
 </body>
 </html>

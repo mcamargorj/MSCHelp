@@ -1,3 +1,4 @@
+/* Estilo básico do corpo */
 body {
     background-color: #f8f9fa;
     font-family: Arial, sans-serif;
@@ -9,6 +10,7 @@ body {
     padding: 20px; /* Adicionando espaçamento interno */
 }
 
+/* Estilo do container */
 .container {
     max-width: 600px; /* Ajuste do tamanho máximo */
     padding: 20px;
@@ -19,23 +21,27 @@ body {
     margin-bottom: auto; /* Centralização vertical */
 }
 
+/* Estilo do título */
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #0056b3; /* Azul da NASA */
 }
 
+/* Estilo para o grupo de formulários */
 .form-group {
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;
 }
 
+/* Estilo para o rótulo do formulário */
 label {
     color: #333;
     margin-bottom: 5px;
 }
 
+/* Estilo para os campos de entrada de texto, email e senha */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -46,6 +52,7 @@ input[type="password"] {
     box-sizing: border-box;
 }
 
+/* Estilo para o botão de envio */
 input[type="submit"] {
     background-color: #0056b3;
     color: #fff;
@@ -61,6 +68,7 @@ input[type="submit"]:hover {
     background-color: #004080;
 }
 
+/* Estilo para alertas */
 .alert {
     padding: 15px;
     margin-bottom: 20px;
@@ -83,6 +91,60 @@ input[type="submit"]:hover {
     border-color: #d6e9c6;
 }
 
+/* Estilo para o texto centralizado */
 .text-center {
     text-align: center;
+}
+
+/* Responsividade para telas pequenas (máximo de 768px de largura) */
+@media screen and (max-width: 768px) {
+    /* Ajusta o container para dispositivos menores */
+    .container {
+        max-width: 90%; /* Ocupa 90% da largura da tela em dispositivos pequenos */
+        padding: 15px;
+    }
+
+    /* Ajusta o título */
+    h2 {
+        font-size: 24px;
+    }
+
+    /* Ajusta os campos de entrada */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 12px; /* Aumenta o padding para facilitar a interação */
+    }
+
+    /* Ajusta o botão de envio */
+    input[type="submit"] {
+        padding: 12px;
+    }
+}
+
+/* Responsividade para telas muito pequenas (máximo de 480px de largura) */
+@media screen and (max-width: 480px) {
+    /* Ajusta o container para ocupar a maior parte da tela */
+    .container {
+        max-width: 95%; /* Ocupa 95% da largura da tela */
+        padding: 10px;
+    }
+
+    /* Ajusta o título */
+    h2 {
+        font-size: 20px; /* Diminui o tamanho do título */
+    }
+
+    /* Ajusta os campos de entrada */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        padding: 14px; /* Aumenta o padding */
+    }
+
+    /* Ajusta o botão de envio */
+    input[type="submit"] {
+        padding: 14px;
+        font-size: 16px; /* Ajusta o tamanho da fonte */
+    }
 }
