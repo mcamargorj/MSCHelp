@@ -13,10 +13,10 @@ app.secret_key = os.urandom(16)
 
 # Conectar ao banco de dados MySQL/MariaDB com senha criptografada e variável ambiente
 conexao = mysql.connector.connect(
-    host="localhost",
-    user="root",
+    host="sql10.freesqldatabase.com",
+    user="sql10748285",
     password=os.environ.get('MYSQL_PASSWORD'),
-    database="MSCHELP"
+    database="sql10748285"
 )
 
 

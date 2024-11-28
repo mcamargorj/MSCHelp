@@ -18,10 +18,10 @@ def criar_usuario():
     if request.method == 'POST':
         # Conectar ao banco de dados MySQL/MariaDB - Utilizar o MySQL do seu servidor
         conexao = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password=os.environ.get('MYSQL_PASSWORD'),  # MYSQL_PASSWORD - variável ambiente criada para que a senha não fique exposta no código.
-            database="MSCHELP"
+            host="sql10.freesqldatabase.com",
+            user="sql10748285",
+            password=os.environ.get('MYSQL_PASSWORD'),
+            database="sql10748285"
         )
 
         # Criar um cursor para executar comandos SQL
@@ -69,10 +69,10 @@ def remover_usuario():
     if request.method == 'POST':
         # Conectar ao banco de dados MySQL/MariaDB
         conexao = mysql.connector.connect(
-            host="localhost",
-            user="root",
+            host="sql10.freesqldatabase.com",
+            user="sql10748285",
             password=os.environ.get('MYSQL_PASSWORD'),
-            database="MSCHELP"
+            database="sql10748285"
         )
 
         # Receber o email do usuário a ser removido via formulário
@@ -109,11 +109,11 @@ def remover_usuario():
 def listar_usuarios():
     # Conectar ao banco de dados MySQL/MariaDB - Utilizar o MySQL do seu servidor
     conexao = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password=os.environ.get('MYSQL_PASSWORD'),  # MYSQL_PASSWORD - variável ambiente criada para que a senha não fique exposta no código.
-        database="MSCHELP"
-    )
+            host="sql10.freesqldatabase.com",
+            user="sql10748285",
+            password=os.environ.get('MYSQL_PASSWORD'),
+            database="sql10748285"
+        )
 
     # Criar um cursor para executar comandos SQL
     cursor = conexao.cursor()
@@ -149,11 +149,11 @@ def listar_usuarios():
 
 def editar_usuarios(id, nome, email, password, role):
     conexao = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password=os.environ.get('MYSQL_PASSWORD'),
-        database="MSCHELP"
-    )
+            host="sql10.freesqldatabase.com",
+            user="sql10748285",
+            password=os.environ.get('MYSQL_PASSWORD'),
+            database="sql10748285"
+        )
     cursor = conexao.cursor()
 
     # Buscar o hash atual da senha para comparação
@@ -206,11 +206,11 @@ def editar_usuarios(id, nome, email, password, role):
 
 def buscar_usuario_por_id(id):
     conexao = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password=os.environ.get('MYSQL_PASSWORD'),
-        database="MSCHELP"
-    )
+            host="sql10.freesqldatabase.com",
+            user="sql10748285",
+            password=os.environ.get('MYSQL_PASSWORD'),
+            database="sql10748285"
+        )
     cursor = conexao.cursor()
     cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
     usuario = cursor.fetchone()
