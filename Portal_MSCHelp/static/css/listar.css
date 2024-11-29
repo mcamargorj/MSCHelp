@@ -232,3 +232,48 @@ tr:hover td {
         font-size: 14px;  /* Diminui o tamanho dos ícones */
     }
 }
+/* Responsividade para telas muito pequenas (máximo de 480px de largura) */
+@media screen and (max-width: 480px) {
+    #conteudo {
+        max-width: 85%;  /* Ajusta a largura máxima para ocupar quase toda a tela */
+        padding: 10px;   /* Reduz o padding ainda mais */
+    }
+
+    table {
+        font-size: 12px;  /* Reduz o tamanho da fonte da tabela para caber na tela */
+    }
+
+    button {
+        padding: 6px 12px;  /* Diminui o padding do botão */
+        font-size: 10px;  /* Reduz o tamanho da fonte do botão */
+    }
+
+    h1 {
+        font-size: 20px;  /* Diminui o tamanho da fonte do título */
+    }
+
+    /* Ajusta o layout da tabela para telas menores */
+    table, th, td {
+        font-size: 10px;  /* Ajusta ainda mais o tamanho da fonte */
+        word-wrap: break-word;  /* Garante que o texto quebre para evitar rolagem horizontal */
+    }
+
+    /* Ajusta os botões dentro dos formulários */
+    form {
+        display: block;  /* Torna os formulários blocos em telas pequenas */
+        width: 100%;  /* O formulário ocupa toda a largura disponível */
+        margin-bottom: 8px;  /* Reduz o espaçamento entre formulários */
+    }
+
+    .buttonbtn {
+        width: 30px;  /* Ajusta o tamanho dos botões com ícones */
+        height: 30px;
+        font-size: 12px;  /* Ajusta o tamanho dos ícones */
+    }
+
+    /* Ajusta imagens ou outros elementos grandes */
+    img, iframe {
+        max-width: 100%;  /* Garante que imagens e iframes não ultrapassem a largura da tela */
+        height: auto;  /* Mantém a proporção das imagens */
+    }
+}

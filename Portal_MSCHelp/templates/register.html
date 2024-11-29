@@ -10,15 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
 </head>
 <body>
-    {% if sucesso == True %}
-        <div class="alert alert-success text-center" role="alert">
-        Usuário criado com sucesso!
-        </div>
-    {% elif sucesso == False %}
-        <div class="alert alert-danger text-center" role="alert">
-        Erro ao criar usuário: {{ erro }}
-        </div>
-    {% endif %}
+   
     
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -44,6 +36,15 @@
                 <p class="text-center mt-3"> Retorne para a página de <a href="{{ url_for('login') }}">Login!</a></p>
             </div>
         </div>
+        {% if sucesso == True %}
+        <div class="alert alert-success text-center" role="alert">
+        Usuário criado com sucesso!
+        </div>
+    {% elif sucesso == False %}
+        <div class="alert alert-danger text-center" role="alert">
+        Erro ao criar usuário: {{ erro }}
+        </div>
+    {% endif %}
     </div>
    
 </body>

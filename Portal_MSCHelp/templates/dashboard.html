@@ -27,6 +27,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+               
                 {% if session.get('role') == 'admin' %}
                 <p class="text-center mt-3">Área restrita do site <a href="{{ url_for('painel_admin') }}">Acessar!</a></p>
                 {% endif %}

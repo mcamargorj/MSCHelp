@@ -1,23 +1,24 @@
-/* Estilo do corpo */
 body {
     background-color: #f8f9fa;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center; /* Centraliza o conteúdo horizontalmente */
-    align-items: center; /* Centraliza o conteúdo verticalmente */
+    align-items: flex-start; /* Alinha o conteúdo ao topo */
     height: 100vh;
     margin: 0;
-    padding: 20px; /* Adicionando espaçamento interno */
+    padding: 20px 0; /* Adiciona espaçamento no topo */
 }
 
 /* Estilo para o contêiner */
 .container {
+    margin: 0 auto; /* Centraliza horizontalmente */
     max-width: 400px;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #fff;
 }
+
 
 /* Estilo para o título */
 h2 {
@@ -109,7 +110,7 @@ img {
 @media screen and (max-width: 768px) {
     /* Ajusta o tamanho do contêiner */
     .container {
-        max-width: 90%; /* Ocupa 90% da largura da tela em dispositivos pequenos */
+        max-width: 85%; /* Ocupa 90% da largura da tela em dispositivos pequenos */
         padding: 15px;
     }
 
@@ -139,7 +140,7 @@ img {
 @media screen and (max-width: 480px) {
     /* Ajusta ainda mais a largura do contêiner */
     .container {
-        max-width: 95%; /* Ocupa 95% da largura da tela */
+        max-width: 85%; /* Ocupa 95% da largura da tela */
         padding: 10px;
     }
 
