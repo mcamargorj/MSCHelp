@@ -112,7 +112,7 @@ form button {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
-    overflow-x: auto; /* Adiciona barra de rolagem horizontal se necessário */
+    
 }
 
 /* Estilizando a tabela */
@@ -202,7 +202,8 @@ tr:hover td {
     }
 
     table {
-        font-size: 14px;  /* Ajusta o tamanho da fonte da tabela */
+        font-size: 12px;  /* Ajusta o tamanho da fonte da tabela */
+        
     }
 
     button {
@@ -216,7 +217,7 @@ tr:hover td {
 
     /* Ajusta o layout da tabela para que seja mais acessível em telas menores */
     table, th, td {
-        font-size: 12px;  /* Reduz o tamanho da fonte na tabela */
+        font-size: 10px;  /* Reduz o tamanho da fonte na tabela */
     }
 
     /* Ajusta os botões dentro dos formulários */
@@ -235,12 +236,13 @@ tr:hover td {
 /* Responsividade para telas muito pequenas (máximo de 480px de largura) */
 @media screen and (max-width: 480px) {
     #conteudo {
-        max-width: 85%;  /* Ajusta a largura máxima para ocupar quase toda a tela */
+        max-width: 95%;  /* Ajusta a largura máxima para ocupar quase toda a tela */
         padding: 10px;   /* Reduz o padding ainda mais */
     }
 
     table {
-        font-size: 12px;  /* Reduz o tamanho da fonte da tabela para caber na tela */
+        font-size: 10px;  /* Reduz o tamanho da fonte da tabela para caber na tela */
+        
     }
 
     button {
